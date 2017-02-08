@@ -1,0 +1,14 @@
+## Archivos PDF
+**/*.pdf
+
+## Archivos temporales de Emacs
+**/*~
+
+## Archivos compilados de Java
+**/*.class
+
+## Archivos compilados de Python
+**/*.pyc
+
+## Archivos Zip
+**/*.zip
