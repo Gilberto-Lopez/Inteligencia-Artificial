@@ -247,7 +247,33 @@ public class Gatos extends PApplet {
             // Hint: se debe verificar si el estado sigue siendo valido, si lo es, generar a sus sucesores
             // usando una lista ligada. recuerden que deben especificar que jugador jugó. No vayan a  
             // dejar sin padre a los sucesores.
-            
+            if (hayGanador || tiradas == 9)
+            	// Ya no puede continuar el juego en este gato
+            	return null;
+            LinkedList<Gato> suc = new LinkedList<>();
+            for (int i = 0; i < 3; i++)
+            	for (int j = 0; j < 3; j++)
+            		if (this.tablero[i][j] == 0) {
+            			// Casilla en la que no han tirado los jugadores
+            			Gato siguiente = new Gato(this);
+            			// Siguiente turno
+            			siguiente.padre = this;
+            			// Cambio de jugador
+            			siguiente.jugador1 = !this.jugador1;
+            			// Tira
+            			siguiente.tiraEn(j,i);
+            			boolean simetrico = false;
+            			for (Gato g : suc)
+            				if (siguiente.equals(g)){
+            					simetrico = true;
+            					break;
+            				}
+            			// No es simetrico a ningun gato en la lista
+            			if (!simetrico)
+            				suc.add(siguiente);
+            		}
+            this.sucesores = suc;
+            return suc;
         }
 
 
@@ -272,9 +298,9 @@ public class Gatos extends PApplet {
             // -------------------------------
             //        IMPLEMENTACION
             // -------------------------------
-        	for (int x = 0; x < 3; x++)
-        		for (int y = 0; y < 3; y++)
-        			if (this.tablero[x][y] != otro.tablero([y][x])
+        	for (int i = 0; i < 3; i++)
+        		for (int j = 0; j < 3; j++)
+        			if (this.tablero[i][j] != otro.tablero[j][i])
         				return false;
             return true;
         }
@@ -284,9 +310,9 @@ public class Gatos extends PApplet {
             // -------------------------------
             //        IMPLEMENTACION
             // -------------------------------
-            for (int x = 0; x < 3; x++)
-        		for (int y = 0; y < 3; y++)
-        			if (this.tablero[x][y] != otro.tablero([2-y][2-x])
+            for (int i = 0; i < 3; i++)
+        		for (int j = 0; j < 3; j++)
+        			if (this.tablero[i][j] != otro.tablero[2-j][2-i])
         				return false;
             return true;
         }
@@ -296,9 +322,9 @@ public class Gatos extends PApplet {
             // -------------------------------
             //        IMPLEMENTACION
             // -------------------------------
-            for (int x = 0; x < 3; x++)
-        		for (int y = 0; y < 3; y++)
-        			if (this.tablero[x][y] != otro.tablero([x][2-y])
+            for (int i = 0; i < 3; i++)
+        		for (int j = 0; j < 3; j++)
+        			if (this.tablero[i][j] != otro.tablero[i][2-j])
         				return false;
             return true;
         }
@@ -308,9 +334,9 @@ public class Gatos extends PApplet {
             // -------------------------------
             //        IMPLEMENTACION
             // -------------------------------
-            for (int x = 0; x < 3; x++)
-        		for (int y = 0; y < 3; y++)
-        			if (this.tablero[x][y] != otro.tablero([2-x][y])
+            for (int i = 0; i < 3; i++)
+        		for (int j = 0; j < 3; j++)
+        			if (this.tablero[i][j] != otro.tablero[2-i][j])
         				return false;
             return true;
         }
@@ -320,9 +346,9 @@ public class Gatos extends PApplet {
             // -------------------------------
             //        IMPLEMENTACION
             // -------------------------------
-            for (int x = 0; x < 3; x++)
-        		for (int y = 0; y < 3; y++)
-        			if (this.tablero[x][y] != otro.tablero([y][2-x])
+            for (int i = 0; i < 3; i++)
+        		for (int j = 0; j < 3; j++)
+        			if (this.tablero[i][j] != otro.tablero[j][2-i])
         				return false;
             return true;
         }
@@ -332,9 +358,9 @@ public class Gatos extends PApplet {
             // -------------------------------
             //        IMPLEMENTACION
             // -------------------------------
-            for (int x = 0; x < 3; x++)
-        		for (int y = 0; y < 3; y++)
-        			if (this.tablero[x][y] != otro.tablero([2-x][2-y])
+            for (int i = 0; i < 3; i++)
+        		for (int j = 0; j < 3; j++)
+        			if (this.tablero[i][j] != otro.tablero[2-i][2-j])
         				return false;
             return true;
         }
@@ -344,9 +370,9 @@ public class Gatos extends PApplet {
             // -------------------------------
             //        IMPLEMENTACION
             // -------------------------------
-            for (int x = 0; x < 3; x++)
-        		for (int y = 0; y < 3; y++)
-        			if (this.tablero[x][y] != otro.tablero([2-y][x])
+            for (int i = 0; i < 3; i++)
+        		for (int j = 0; j < 3; j++)
+        			if (this.tablero[i][j] != otro.tablero[2-j][i])
         				return false;
             return true;
         }
