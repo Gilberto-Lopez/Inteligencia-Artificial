@@ -1,0 +1,19 @@
+run:
+     [java] Profundidad 1:
+     [java] Diámetro máximo 3. Nodos en el último nivel: 3
+     [java] Profundidad 2:
+     [java] Diámetro máximo 12. Nodos en el último nivel: 12
+     [java] Profundidad 3:
+     [java] Diámetro máximo 66. Nodos en el último nivel: 66
+     [java] Profundidad 4:
+     [java] Diámetro máximo 360. Nodos en el último nivel: 360
+     [java] Profundidad 5:
+     [java] Diámetro máximo 1710. Nodos en el último nivel: 1710
+     [java] Profundidad 6:
+     [java] Diámetro máximo 5992. Nodos en el último nivel: 5992
+     [java] Profundidad 7:
+     [java] Diámetro máximo 15878. Nodos en el último nivel: 15878
+     [java] Profundidad 8:
+     [java] Diámetro máximo 20964. Nodos en el último nivel: 20964
+     [java] Profundidad 9:
+     [java] Diámetro máximo 20964. Nodos en el último nivel: 13538
