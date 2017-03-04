@@ -6,3 +6,5 @@ Prácticas:
 1. Introducción a Agentes.
 2. Espacio de Búsqueda.
 3. Backtracking.
+4. Algoritmo A*.
+
