@@ -110,9 +110,9 @@ public class AEstrella extends PApplet {
                         text("g(n)=" + m.gn, j*tamanioMosaico+4, (i+1)*tamanioMosaico - 20);
                         text("h(n)=" + m.hn, j*tamanioMosaico+4, (i+1)*tamanioMosaico - 4);
                         ellipse((float)((0.5 + j) * tamanioMosaico), (float)((0.5 + i) * tamanioMosaico), (float)10, (float)10);
-                        line((float)((0.5 + j) * tamanioMosaico), (float)((0.5 + i) * tamanioMosaico),
+                        /*line((float)((0.5 + j) * tamanioMosaico), (float)((0.5 + i) * tamanioMosaico),
                            (float)((0.5 + j) * tamanioMosaico + (m.padre.columna - m.columna) * 20),
-                           (float)((0.5 + i) * tamanioMosaico + (m.padre.renglon - m.renglon) * 20));
+                           (float)((0.5 + i) * tamanioMosaico + (m.padre.renglon - m.renglon) * 20));*/
                         break;
                 }
             }
@@ -188,7 +188,23 @@ public class AEstrella extends PApplet {
             * HINT: calculen la distancia de este mosaico hacia el mosaico meta y luego multipliquenlo por 10
             * para que el valor sea significativo. tampoco deberia haber valores negativos
             */
-            hn = 1 * 10;
+            /*
+            * La distancia Manhattan considera un costo de 10 en línea
+            * y 14 en diagonal.
+            */
+            // Calculamos las distancias entre coordenadas.
+            int dx = meta.columna - this.columna;
+            int dy = meta.renglon - this.renglon;
+            dx = dx < 0 ? -dx : dx;
+            dy = dy < 0 ? -dy : dy;
+            // Calculamos el número de movimientos en diagonal
+            // que debemos hacer. Es menos costoso que dos
+            // movimientos en línea.
+            int diagonales = Math.min (dx, dy);
+            // Calculamos el número de movimientos en línea
+            // restantes.
+            int r = (diagonales == dx ? dy : dx) - diagonales;
+            this.hn = diagonales * 14 + r * 10;
         }
 
         /**
@@ -321,14 +337,15 @@ public class AEstrella extends PApplet {
             resuelto = false;
             this.estadoFinal = estadoFinal;
             // aqui deben incializar sus listas abierta y cerrada
-            // listaAbierta = new PriorityQueue();
-            // listaCerrada = new Hashtable();
+            listaAbierta = new PriorityQueue<>();
+            listaCerrada = new Hashtable<>();
             estadoInicial.calculaHeuristica(estadoFinal);
             estadoInicial.tipo = Tipo.ESTADO_INICIAL;
             estadoFinal.tipo = Tipo.ESTADO_FINAL;
 
             nodoPrevio = new NodoBusqueda(estadoInicial);
-            // listaAbierta.offer(nodoPrevio);
+            nodoPrevio.estado.padre = nodoPrevio.estado;
+            listaAbierta.offer(nodoPrevio);
         }
 
         void expandeNodoSiguiente() {
@@ -341,6 +358,43 @@ public class AEstrella extends PApplet {
               * nodo final, si no lo es hay que generar sus sucesores, verificar en que lista se encuentra y tomar
               * la accion correspondiente.
               */
+            if (resuelto)
+                return;
+            nodoActual = listaAbierta.poll ();
+            listaCerrada.put (nodoActual.estado, nodoActual.estado);
+            nodoActual.estado.situacion = Situacion.EN_LISTA_CERRADA;
+            if (nodoActual.estado.tipo == Tipo.ESTADO_FINAL) {
+                resuelto = true;
+                NodoBusqueda tmp = nodoActual;
+                while (tmp.estado.tipo != Tipo.ESTADO_INICIAL) {
+                    tmp.estado.situacion = Situacion.EN_SOLUCION;
+                    tmp = tmp.padre;
+                }
+                // tmp es el inicial tras el ciclo.
+                tmp.estado.situacion = Situacion.EN_SOLUCION;
+            } else {
+                LinkedList<NodoBusqueda> suc = nodoActual.getSucesores ();
+                for (NodoBusqueda sucesor : suc) {
+                    // La situación del sucesor no puede ser ACTUAL ni EN_SOLUCION.
+                    // Si está en la lista cerrada ya no lo visitamos.
+                    if (sucesor.estado.situacion != Situacion.EN_LISTA_CERRADA) {
+                        if (sucesor.estado.situacion != Situacion.EN_LISTA_ABIERTA) {
+                            // Situación solo puede ser SIN_VISITAR.
+                            sucesor.estado.calculaHeuristica (this.estadoFinal);
+                            sucesor.estado.gn = sucesor.gn;
+                            listaAbierta.offer (sucesor);
+                            sucesor.estado.situacion = Situacion.EN_LISTA_ABIERTA;
+                        }else if (sucesor.estado.gn > sucesor.gn){
+                            // Situación solo puede ser EN_LISTA_ABIERTA.
+                            // Se tuvo que calcular previamente su h(n).
+                            sucesor.estado.gn = sucesor.gn;
+                            sucesor.estado.padre = sucesor.padre.estado;
+                            listaAbierta.remove (sucesor);
+                            listaAbierta.offer (sucesor);
+                        }
+                    }
+                }
+            }
         }
     }
 
