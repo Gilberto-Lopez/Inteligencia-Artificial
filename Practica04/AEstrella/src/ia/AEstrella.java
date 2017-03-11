@@ -110,9 +110,9 @@ public class AEstrella extends PApplet {
                         text("g(n)=" + m.gn, j*tamanioMosaico+4, (i+1)*tamanioMosaico - 20);
                         text("h(n)=" + m.hn, j*tamanioMosaico+4, (i+1)*tamanioMosaico - 4);
                         ellipse((float)((0.5 + j) * tamanioMosaico), (float)((0.5 + i) * tamanioMosaico), (float)10, (float)10);
-                        /*line((float)((0.5 + j) * tamanioMosaico), (float)((0.5 + i) * tamanioMosaico),
+                        line((float)((0.5 + j) * tamanioMosaico), (float)((0.5 + i) * tamanioMosaico),
                            (float)((0.5 + j) * tamanioMosaico + (m.padre.columna - m.columna) * 20),
-                           (float)((0.5 + i) * tamanioMosaico + (m.padre.renglon - m.renglon) * 20));*/
+                           (float)((0.5 + i) * tamanioMosaico + (m.padre.renglon - m.renglon) * 20));
                         break;
                 }
             }
@@ -344,7 +344,6 @@ public class AEstrella extends PApplet {
             estadoFinal.tipo = Tipo.ESTADO_FINAL;
 
             nodoPrevio = new NodoBusqueda(estadoInicial);
-            nodoPrevio.estado.padre = nodoPrevio.estado;
             listaAbierta.offer(nodoPrevio);
         }
 
@@ -361,8 +360,9 @@ public class AEstrella extends PApplet {
             if (resuelto)
                 return;
             nodoActual = listaAbierta.poll ();
-            listaCerrada.put (nodoActual.estado, nodoActual.estado);
-            nodoActual.estado.situacion = Situacion.EN_LISTA_CERRADA;
+            listaCerrada.put (nodoPrevio.estado, nodoPrevio.estado);
+            nodoPrevio.estado.situacion = Situacion.EN_LISTA_CERRADA;
+            nodoActual.estado.situacion = Situacion.ACTUAL;
             if (nodoActual.estado.tipo == Tipo.ESTADO_FINAL) {
                 resuelto = true;
                 NodoBusqueda tmp = nodoActual;
@@ -382,6 +382,7 @@ public class AEstrella extends PApplet {
                             // Situación solo puede ser SIN_VISITAR.
                             sucesor.estado.calculaHeuristica (this.estadoFinal);
                             sucesor.estado.gn = sucesor.gn;
+                            sucesor.estado.padre = nodoActual.estado;
                             listaAbierta.offer (sucesor);
                             sucesor.estado.situacion = Situacion.EN_LISTA_ABIERTA;
                         }else if (sucesor.estado.gn > sucesor.gn){
@@ -389,12 +390,17 @@ public class AEstrella extends PApplet {
                             // Se tuvo que calcular previamente su h(n).
                             sucesor.estado.gn = sucesor.gn;
                             sucesor.estado.padre = sucesor.padre.estado;
+                            // PriorityQueue no tiene decreaseKey () por lo que
+                            // no debería aumentar la complejidad si todo está
+                            // bien hecho en esa interfaz.
+                            // Disgusting.
                             listaAbierta.remove (sucesor);
                             listaAbierta.offer (sucesor);
                         }
                     }
                 }
             }
+            nodoPrevio = nodoActual;
         }
     }
 
