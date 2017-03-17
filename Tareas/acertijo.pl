@@ -45,7 +45,7 @@ parentezco(felipe,padre).
 %% Eso sería weird af.
 %% parentezco(Hermano,hermano) :- member(Hermano,[felipe,isidro]),
 %%                                parentezco(Padre,padre),
-%%                                Padre =:= Hermano.
+%%                                Padre \== Hermano.
 %%
 
 %% Por 2 tenemos que Nuria no es la madre.
@@ -62,7 +62,7 @@ parentezco(elisa,madre).
 %% Ni la protagonista.
 %% parentezco(Hermana,hermana) :- member(Hermana,[elisa,nuria]),
 %%                                parentezco(Madre,madre),
-%%                                Madre =:= Hermana.
+%%                                Madre \== Hermana.
 %%
 
 %% Helado al corte costó 2 euros más que el cono.
@@ -91,11 +91,25 @@ pidio(Madre,Helado) :- helado(Helado),
 %% El novio no pidio tarrina.
 pidio(Nombre,tarrina) :- nombre(Nombre),
                          parentezco(Novio,novio),
-                         Nombre =:= Novio.
+                         Nombre \== Novio.
 %% Felipe no pidió tarrina.
 pidio(Nombre,tarrina) :- nombre(Nombre),
-                         Nombre =:= felipe.
+                         Nombre \== felipe.
 %% Posibles opciones de helados.
 pidio(Nombre,Helado) :- nombre(Nombre),
                         helado(Helado).
+
+%% Solucion.
+%% Nombre y relación están fijos por lo observado anteriormente.
+solucion(Nombre1,Nombre2,Nombre3,Nombre4,Nombre5,
+         Relacion1,Relacion2,Relacion3,Relacion4,Relacion5,
+         Helado1,Helado2,Helado3,Helado4,Helado5,
+         Costo1,Costo2,Costo3,Costo4,Costo5) :-
+nombre(Nombre1),nombre(Nombre2),nombre(Nombre3),nombre(Nombre4),nombre(Nombre5),
+parentezco(Nombre1,Relacion1),parentezco(Nombre2,Relacion2),parentezco(Nombre3,Relacion3),parentezco(Nombre4,Relacion4),parentezco(Nombre5,Relacion5),
+pidio(Nombre1,Helado1),pidio(Nombre2,Helado2),pidio(Nombre3,Helado3),pidio(Nombre4,Helado4),pidio(Nombre5,Helado5),
+costo(Helado1,Costo1),costo(Helado2,Costo2),costo(Helado3,Costo3),costo(Helado4,Costo4),costo(Helado5,Costo5).
+
+%% Prueba
+%% solucion(elisa,felipe,isidro,luis,nuria,R1,R2,R3,R4,R5,H1,H2,H3,H4,H5,C1,C2,C3,C4,C5).
 
