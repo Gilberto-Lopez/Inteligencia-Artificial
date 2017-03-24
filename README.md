@@ -7,4 +7,4 @@ Prácticas:
 2. Espacio de Búsqueda.
 3. Backtracking.
 4. Algoritmo A*.
-
+5. STRIPS.
