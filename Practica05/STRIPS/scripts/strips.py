@@ -163,43 +163,162 @@ class Problema:
 if __name__ == '__main__':
     print("Crea aquí los objetos del problema y pide a la computadora que lo resuelva")
 
-#    # Objetos y problema
-#    r1 = Objeto ('r1', 'robot')
-#    l1 = Objeto ('l1', 'location')
-#    l2 = Objeto ('l2', 'location')
-#    k1 = Objeto ('k1', 'crane')
-#    k2 = Objeto ('k2', 'crane')
-#    p1 = Objeto ('p1', 'pile')
-#    p2 = Objeto ('p2', 'pile')
-#    q1 = Objeto ('q1', 'pile')
-#    q2 = Objeto ('q2', 'pile')
-#    ca = Objeto ('ca', 'container')
-#    cb = Objeto ('cb', 'container')
-#    cc = Objeto ('cc', 'container')
-#    cd = Objeto ('cd', 'container')
-#    ce = Objeto ('ce', 'container')
-#    cf = Objeto ('cf', 'container')
-#    pallet = Objeto ('pallet', 'container')
+    # 1. Objetos y problema
+
+    # Objetos
+    r1 = Objeto ('r1', 'robot')
+    l1 = Objeto ('l1', 'location')
+    l2 = Objeto ('l2', 'location')
+    k1 = Objeto ('k1', 'crane')
+    k2 = Objeto ('k2', 'crane')
+    p1 = Objeto ('p1', 'pile')
+    p2 = Objeto ('p2', 'pile')
+    q1 = Objeto ('q1', 'pile')
+    q2 = Objeto ('q2', 'pile')
+    ca = Objeto ('ca', 'container')
+    cb = Objeto ('cb', 'container')
+    cc = Objeto ('cc', 'container')
+    cd = Objeto ('cd', 'container')
+    ce = Objeto ('ce', 'container')
+    cf = Objeto ('cf', 'container')
+    pallet = Objeto ('pallet', 'container')
+
+    # Predicados
+    adjacent = Predicado ('adjacent',
+        [Variable ('?l1', 'location'), Variable ('?l2', 'location')])
+    attached = Predicado ('attached',
+        [Variable ('?p', 'pile'), Variable ('?l', 'location')])
+    belong = Predicado ('belong',
+        [Variable ('?k', 'crane'), Variable ('?l', 'location')])
+    at = Predicado ('at',
+        [Variable ('?r', 'robot'), Variable ('?l', 'location')])
+    occupied = Predicado ('occupied',
+        [Variable ('?l', 'location')])
+    loaded = Predicado ('loaded',
+        [Variable ('?r', 'robot'), Variable ('?c', 'container')])
+    unloaded = Predicado ('unloaded',
+        [Variable ('?r', 'robot')])
+    holding = Predicado ('holding',
+        [Variable ('?k', 'crane'), Variable ('?l', 'location')])
+    empty = Predicado ('empty',
+        [Variable ('?k', 'crane')])
+    in_ = Predicado ('in',
+        [Variable ('?c', 'container'), Variable ('?p', 'pile')])
+    top = Predicado ('top',
+        [Variable ('?c', 'container'), Variable ('?p', 'pile')])
+    on = Predicado ('on',
+        [Variable ('?k1', 'container'), Variable ('?k2', 'container')])
+    # Negaciones
+    noccupied = Predicado ('occupied',
+        [Variable ('?l', 'location')], True)
+    nat = Predicado ('at',
+        [Variable ('?r', 'robot'), Variable ('?l', 'location')], True)
+    nunloaded = Predicado ('unloaded',
+        [Variable ('?r', 'robot')], True)
+    nholding = Predicado ('holding',
+        [Variable ('?k', 'crane'), Variable ('?l', 'location')], True)
+    nloaded = Predicado ('loaded',
+        [Variable ('?r', 'robot'), Variable ('?c', 'container')], True)
+    nempty = Predicado ('empty',
+        [Variable ('?k', 'crane')], True)
+    nin = Predicado ('in',
+        [Variable ('?c', 'container'), Variable ('?p', 'pile')], True)
+    ntop = Predicado ('top',
+        [Variable ('?c', 'container'), Variable ('?p', 'pile')], True)
+    non = Predicado ('on',
+        [Variable ('?k1', 'container'), Variable ('?k2', 'container')], True)
+
+    # Acciones
+    move = Acción ('move',
+        [Variable ('?r', 'robot'), Variable ('?from', 'location'), Variable ('?to', 'location')],
+        [adjacent, at, noccupied],
+        [at, noccupied, occupied, nat])
+        
+    load = Acción ('load',
+        [Variable ('?k', 'crane'), Variable ('?c', 'container'), Variable ('?r', 'robot')],
+        [at, belong, holding, unloaded],
+        [loaded, nunloaded, empty, nholding],
+        [Variable ('?l', 'location')])
+    unload = Acción ('unload',
+        [Variable ('?k', 'crane'), Variable ('?c', 'container'), Variable ('?r', 'robot')],
+        [belong, at, loaded, empty],
+        [unloaded, holding, nloaded, nempty],
+        [Variable ('?l', 'location')])
+    take = Acción ('take',
+        [Variable ('?k', 'crane'), Variable ('?c', 'container'), Variable ('?p', 'pile')],
+        [belong, attached, empty, in_, top, on],
+        [holding, top, nin, ntop, non, nempty],
+        [Variable ('?l', 'location'), Variable ('?else', 'container')])
+    put = Acción ('put',
+        [Variable ('?k', 'crane'), Variable ('?c', 'container'), Variable ('?p', 'pile')],
+        [belong, attached, holding, top],
+        [in_, top, on, ntop, nholding, empty],
+        [Variable ('?else', 'container'), Variable ('?l', 'location')])
+
+    # Dominio
+    dwr = Dominio ('dock-worker-robot',
+        ['robot', 'location', 'crane', 'pile', 'container'],
+        [adjacent, attached, belong, at, occupied, loaded, unloaded, holding, empty, in_, top, on],
+        [move, load, unload, take, put])
+
+    print (dwr)
+
+    # Problema
+    dwrpb1 = Problema ('dwrpb1', dwr,
+        [r1, l1, l2, k1, k2, p1, p2, q1, q2, ca, cb, cc, cd, ce, cf, pallet],
+        [ # Predicados del problema
+        Predicado ('adjacent', [Variable ('?l1', 'location', l1), Variable ('?l2', 'location', l2)]),
+        Predicado ('adjacent', [Variable ('?l1', 'location', l2), Variable ('?l2', 'location', l1)]),
+        Predicado ('attached', [Variable ('?p', 'pile', p1), Variable ('?l', 'location', l1)]),
+        Predicado ('attached', [Variable ('?p', 'pile', q1), Variable ('?l', 'location', l1)]),
+        Predicado ('attached', [Variable ('?p', 'pile', p2), Variable ('?l', 'location', l2)]),
+        Predicado ('attached', [Variable ('?p', 'pile', q2), Variable ('?l', 'location', l2)]),
+        Predicado ('belong', [Variable ('?k', 'crane', k1), Variable ('?l', 'location', l1)]),
+        Predicado ('belong', [Variable ('?k', 'crane', k2), Variable ('?l', 'location', l2)]),
+        Predicado ('in', [Variable ('?c', 'container', ca), Variable ('?p', 'pile', p1)]),
+        Predicado ('in', [Variable ('?c', 'container', cb), Variable ('?p', 'pile', p1)]),
+        Predicado ('in', [Variable ('?c', 'container', cc), Variable ('?p', 'pile', p1)]),
+        Predicado ('in', [Variable ('?c', 'container', cd), Variable ('?p', 'pile', q1)]),
+        Predicado ('in', [Variable ('?c', 'container', ce), Variable ('?p', 'pile', q1)]),
+        Predicado ('in', [Variable ('?c', 'container', cf), Variable ('?p', 'pile', q1)]),
+        Predicado ('on', [Variable ('?k1', 'container', ca), Variable ('?k2', 'container', pallet)]),
+        Predicado ('on', [Variable ('?k1', 'container', cb), Variable ('?k2', 'container', ca)]),
+        Predicado ('on', [Variable ('?k1', 'container', cc), Variable ('?k2', 'container', cb)]),
+        Predicado ('on', [Variable ('?k1', 'container', cd), Variable ('?k2', 'container', pallet)]),
+        Predicado ('on', [Variable ('?k1', 'container', ce), Variable ('?k2', 'container', cd)]),
+        Predicado ('on', [Variable ('?k1', 'container', cf), Variable ('?k2', 'container', ce)]),
+        Predicado ('top', [Variable ('?c', 'container', cc), Variable ('?p', 'pile', p1)]),
+        Predicado ('top', [Variable ('?c', 'container', cf), Variable ('?p', 'pile', q1)]),
+        Predicado ('top', [Variable ('?c', 'container', pallet), Variable ('?p', 'pile', p2)]),
+        Predicado ('top', [Variable ('?c', 'container', pallet), Variable ('?p', 'pile', q2)]),
+        Predicado ('at', [Variable ('?r', 'robot', r1), Variable ('?l', 'location', l1)]),
+        Predicado ('unloaded', [Variable ('?r', 'robot', r1)]),
+        Predicado ('occupied', [Variable ('?l', 'location', l1)]),
+        Predicado ('empty', [Variable ('?k', 'crane', k1)]),
+        Predicado ('empty', [Variable ('?k', 'crane', k2)])
+        ],
+        [ # Predicados meta del problema
+        Predicado ('in', [Variable ('?c', 'container', ca), Variable ('?p', 'pile', p2)]),
+        Predicado ('in', [Variable ('?c', 'container', cb), Variable ('?p', 'pile', q2)]),
+        Predicado ('in', [Variable ('?c', 'container', cc), Variable ('?p', 'pile', p2)]),
+        Predicado ('in', [Variable ('?c', 'container', cd), Variable ('?p', 'pile', q2)]),
+        Predicado ('in', [Variable ('?c', 'container', ce), Variable ('?p', 'pile', q2)]),
+        Predicado ('in', [Variable ('?c', 'container', cf), Variable ('?p', 'pile', q2)]),
+        ])
+
+    print (dwrpb1)
+
+#    # Ejemplo de cómo usar las clases
+#    p = Predicado('en-tripulación', [Variable('?m', 'marinero')])
+#    np = Predicado('en-tripulación', [Variable('?m', 'marinero')], True)
+#    dominio = Dominio('Barquito',
+#                      ['marinero'],
+#                      [p],
+#                      [Acción('desembarcar', [Variable('?m', 'marinero')], [p], [np])])
+#    print(dominio)
 #
-#
-#    dominio = Dominio ('dock-worker-robot',
-#        ['robot', 'location', 'crane', 'pile', 'container'],
-#        [],
-#        [])
-
-
-
-    # Ejemplo de cómo usar las clases
-    p = Predicado('en-tripulación', [Variable('?m', 'marinero')])
-    np = Predicado('en-tripulación', [Variable('?m', 'marinero')], True)
-    dominio = Dominio('Barquito',
-                      ['marinero'],
-                      [p],
-                      [Acción('desembarcar', [Variable('?m', 'marinero')], [p], [np])])
-    print(dominio)
-
-    popeye = Objeto('Popeye', 'marinero')
-    pobj = Predicado('en-tripulación', [Variable('?m', 'marinero', popeye)])
-    npobj = Predicado('en-tripulación', [Variable('?m', 'marinero', popeye)], True)
-    problema = Problema('baja-de-barquito', dominio, [popeye], [pobj], [npobj])
-    print(problema)
+#    popeye = Objeto('Popeye', 'marinero')
+#    pobj = Predicado('en-tripulación', [Variable('?m', 'marinero', popeye)])
+#    npobj = Predicado('en-tripulación', [Variable('?m', 'marinero', popeye)], True)
+#    problema = Problema('baja-de-barquito', dominio, [popeye], [pobj], [npobj])
+#    print(problema)
