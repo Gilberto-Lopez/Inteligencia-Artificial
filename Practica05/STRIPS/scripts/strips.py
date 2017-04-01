@@ -1,3 +1,5 @@
+import copy
+
 # ------ Dominio -----
 
 class Dominio:
@@ -31,6 +33,8 @@ class Dominio:
           {actions})
         """.format(**dic)
 
+    def __repr__(self):
+        return self.__str__()
 
 class Variable:
     """ Variable tipada. """
@@ -48,6 +52,9 @@ class Variable:
         if self.valor:
             return self.valor.nombre
         return "{} - {}".format(self.nombre, self.tipo)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class Predicado:
@@ -69,6 +76,8 @@ class Predicado:
             return "(not {0})".format(pred)
         return pred
 
+    def __repr__(self):
+        return self.__str__()
 
 class Acción:
     """ Función de transición con su acción correspondiente. """
@@ -105,6 +114,8 @@ class Acción:
         )
         """.format(**dic)
 
+    def __repr__(self):
+        return self.__str__()
 
 # ------ Problema -----
 
@@ -122,6 +133,8 @@ class Objeto:
     def __str__(self):
         return "{} - {}".format(self.nombre, self.tipo)
 
+    def __repr__(self):
+        return self.__str__()
 
 class Problema:
     """ Definicion de un problema en un dominio particular. """
@@ -159,6 +172,37 @@ class Problema:
         )
         """.format(**dic)
 
+    def __repr__(self):
+        return self.__str__()
+
+    def es_aplicable (self, accion):
+        """
+        Determina si la acción dada, que debe estar en el dominio, es aplicable
+        en el estado actual del problema, y de ser posible, con qué sustitución.
+        Regresa una tupla (B,L) donde B es un booleano (si la acción es
+        aplicable B es True, False en otro caso) y L es la lista de variables
+        con sus valores resultantes de la sustitución o [].
+        """
+        sust = []
+        ap = False
+        for p in accion.precondiciones:
+            for a in self.estado:
+                if p.nombre == a.nombre and p.negativo == a.negativo:
+                    ap = True
+                    # Unificamos
+                    for t in zip (a.variables, p.variables):
+                        if t[1].valor == None:
+                            #t[1].valor = t[0].valor
+                            sust.append ((t[1],t[0].valor))
+                        elif t[1].valor == t[0].valor:
+                            continue
+                        else:
+                            for v in p.variables:
+                                v.valor = None
+                            sust = []
+                            ap = False
+                            break
+        return (ap, sust)
 
 if __name__ == '__main__':
     print("Crea aquí los objetos del problema y pide a la computadora que lo resuelva")
@@ -229,31 +273,106 @@ if __name__ == '__main__':
         [Variable ('?k1', 'container'), Variable ('?k2', 'container')], True)
 
     # Acciones
+    r_m = Variable ('?r', 'robot')
+    from_m = Variable ('?from', 'location')
+    to_m = Variable ('?to', 'location')
     move = Acción ('move',
-        [Variable ('?r', 'robot'), Variable ('?from', 'location'), Variable ('?to', 'location')],
-        [adjacent, at, noccupied],
-        [at, noccupied, occupied, nat])
-        
+        [r_m, from_m, to_m],
+        [
+        Predicado ('adjacent', [from_m, to_m]),
+        Predicado ('at', [r_m, from_m]),
+        Predicado ('occupied', [to_m], True)
+        ],
+        [
+        Predicado ('at', [r_m, to_m]),
+        Predicado ('occupied', [from_m], True),
+        Predicado ('occupied', [to_m]),
+        Predicado ('at', [r_m, from_m], True)
+        ])
+    k_l = Variable ('?k', 'crane'),
+    c_l = Variable ('?c', 'container')
+    r_l = Variable ('?r', 'robot')
+    l_l = Variable ('?l', 'location')
     load = Acción ('load',
-        [Variable ('?k', 'crane'), Variable ('?c', 'container'), Variable ('?r', 'robot')],
-        [at, belong, holding, unloaded],
-        [loaded, nunloaded, empty, nholding],
-        [Variable ('?l', 'location')])
+        [k_l, c_l, r_l],
+        [
+        Predicado ('at', [r_l, l_l]),
+        Predicado ('belong', [k_l, l_l]),
+        Predicado ('holding', [k_l, c_l]),
+        Predicado ('unloaded', [r_l])
+        ],
+        [
+        Predicado ('loaded', [r_l,c_l]),
+        Predicado ('unloaded', [r_l], True),
+        Predicado ('empty', [k_l]),
+        Predicado ('holding', [k_l, c_l], True)
+        ],
+        [l_l])
+    k_u = Variable ('?k', 'crane')
+    c_u = Variable ('?c', 'container')
+    r_u = Variable ('?r', 'robot')
+    l_u = Variable ('?l', 'location')
     unload = Acción ('unload',
-        [Variable ('?k', 'crane'), Variable ('?c', 'container'), Variable ('?r', 'robot')],
-        [belong, at, loaded, empty],
-        [unloaded, holding, nloaded, nempty],
-        [Variable ('?l', 'location')])
+        [k_u, c_u, r_u],
+        [
+        Predicado ('belong', [k_u, l_u]),
+        Predicado ('at', [r_u, l_u]),
+        Predicado ('loaded', [r_u, c_u]),
+        Predicado ('empty', [k_u])
+        ],
+        [
+        Predicado ('unloaded', [r_u]),
+        Predicado ('holding', [k_u, c_u]),
+        Predicado ('loaded', [r_u, c_u], True),
+        Predicado ('empty', [k_u], True)
+        ],
+        [l_u])
+    k_t = Variable ('?k', 'crane')
+    c_t = Variable ('?c', 'container')
+    p_t = Variable ('?p', 'pile')
+    l_t = Variable ('?l', 'location')
+    else_t = Variable ('?else', 'container')
     take = Acción ('take',
-        [Variable ('?k', 'crane'), Variable ('?c', 'container'), Variable ('?p', 'pile')],
-        [belong, attached, empty, in_, top, on],
-        [holding, top, nin, ntop, non, nempty],
-        [Variable ('?l', 'location'), Variable ('?else', 'container')])
+        [k_t, c_t, p_t],
+        [
+        Predicado ('belong', [k_u, l_u]),
+        Predicado ('attached', [p_t, l_t]),
+        Predicado ('empty', [k_t]),
+        Predicado ('in', [c_t, p_t]),
+        Predicado ('top', [c_t, p_t]),
+        Predicado ('on', [c_t, else_t])
+        ],
+        [
+        Predicado ('holding', [k_t, c_t]),
+        Predicado ('top', [else_t, p_t]),
+        Predicado ('in', [c_t, p_t], True),
+        Predicado ('top', [c_t, p_t], True),
+        Predicado ('on', [c_t, else_t], True),
+        Predicado ('empty', [k_t], True)
+        ],
+        [l_t, else_t])
+    k_p = Variable ('?k', 'crane')
+    c_p = Variable ('?c', 'container')
+    p_p = Variable ('?p', 'pile')
+    else_p = Variable ('?else', 'container')
+    l_p = Variable ('?l', 'location')
     put = Acción ('put',
-        [Variable ('?k', 'crane'), Variable ('?c', 'container'), Variable ('?p', 'pile')],
-        [belong, attached, holding, top],
-        [in_, top, on, ntop, nholding, empty],
-        [Variable ('?else', 'container'), Variable ('?l', 'location')])
+        [k_p, c_p, p_p],
+        [
+        Predicado ('belong', [k_p, l_p]),
+        Predicado ('attached', [p_p, l_p]),
+        Predicado ('holding', [k_p, c_p]),
+        Predicado ('top', [else_p, p_p])
+        ],
+        [
+        Predicado ('in', [c_p, p_p]),
+        Predicado ('top', [c_p, p_p]),
+        Predicado ('on', [c_p, else_p]),
+        Predicado ('top', [else_p, p_p], True),
+        Predicado ('holding', [k_p, c_p], True),
+        Predicado ('empty', [k_p]),
+        ],
+        [else_p, l_p])
 
     # Dominio
     dwr = Dominio ('dock-worker-robot',
