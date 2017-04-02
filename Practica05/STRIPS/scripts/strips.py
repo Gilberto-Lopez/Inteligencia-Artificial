@@ -192,7 +192,7 @@ class Problema:
                     # Unificamos
                     for t in zip (a.variables, p.variables):
                         if t[1].valor == None:
-                            #t[1].valor = t[0].valor
+                            t[1].valor = t[0].valor
                             sust.append ((t[1],t[0].valor))
                         elif t[1].valor == t[0].valor:
                             continue
@@ -203,6 +203,37 @@ class Problema:
                             ap = False
                             break
         return (ap, sust)
+
+    def meta (self):
+        """
+        Determina si el estado actual del problema satisface las condiciones del
+        campo meta.
+        """
+        for pred in self.meta:
+            r = False
+            for s in self.estado:
+                if (pred.nombre == s.nombre and
+                    pred.negativo == s.negativo and
+                    self._variables_iguales (pred.variables, s.variables)):
+                    # pred está en el estado.
+                    r = True
+                    break
+            if not r:
+                # pred no está en el estado.
+                return r
+        return True
+
+    def _variables_iguales (self, l1, l2):
+        # Determina si dos listas de variables son iguales, las variables
+        # aparecen en el mismo orden, tienen el mismo tipo, nombre y valor.
+        if len (l1) != len (l2):
+            return False
+        for i in range(len(l1)):
+            if (l1[i].tipo != l2[i].tipo or
+                l1[i].nombre != l2[i].nombre or
+                l1[i].valor != l2[i].valor):
+                return False
+        return True
 
 if __name__ == '__main__':
     print("Crea aquí los objetos del problema y pide a la computadora que lo resuelva")
