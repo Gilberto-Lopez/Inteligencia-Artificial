@@ -1,4 +1,4 @@
-import product from itertools
+from itertools import product
 
 # ------ Dominio -----
 
@@ -183,20 +183,22 @@ class Problema:
         aplicable B es True, False en otro caso) y L es la lista de variables
         con sus valores resultantes de la sustitución o [].
         """
-        vars = accion.parametros
-        if accion.variables != None:
-        	vars.extend (accion.variables)
+        vars = accion.parámetros
+        if accion.vars != None:
+        	vars.extend (accion.vars)
         asignaciones = self._asignaciones (vars)
         if asignaciones == []:
             # Alguna variable no se pudo unificar
             return (False, asignaciones)
         for sigma in asignaciones:
+            print (sigma)
             for sust in sigma:
                 sust[0].valor = sust[1]
-            # Las variables de la acción están aterrizadas
-            if self._estado_satisface (self.precondiciones):
-                map (lambda x: x.valor = None, vars)
+            # Las precondiciones de la acción están aterrizadas
+            if self._estado_satisface (accion.precondiciones):
+                for x in vars: x.valor = None
                 return (True, sust)
+            for x in vars: x.valor = None
         return (False, [])
 
     def es_meta (self):
@@ -211,8 +213,7 @@ class Problema:
         # de entrada en el estado actual.
         asignaciones = []
         for var in variables:
-            a_var = []
-            map (lambda x: a_var.append((var, x.valor)) if x.tipo == var.tipo, self.objetos)
+            a_var = [(var, x) for x in self.objetos if x.tipo == var.tipo]
             if a_var == []:
                 # No se pudo unificar var
                 return []
