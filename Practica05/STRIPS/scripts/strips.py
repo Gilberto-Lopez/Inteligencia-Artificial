@@ -1,4 +1,4 @@
-import copy
+import product from itertools
 
 # ------ Dominio -----
 
@@ -187,11 +187,17 @@ class Problema:
         if accion.variables != None:
         	vars.extend (accion.variables)
         asignaciones = self._asignaciones (vars)
-        if len(asignaciones) == 0:
+        if asignaciones == []:
             # Alguna variable no se pudo unificar
             return (False, asignaciones)
-        else
-            pass
+        for sigma in asignaciones:
+            for sust in sigma:
+                sust[0].valor = sust[1]
+            # Las variables de la acción están aterrizadas
+            if self._estado_satisface (self.precondiciones):
+                map (lambda x: x.valor = None, vars)
+                return (True, sust)
+        return (False, [])
 
     def es_meta (self):
         """
@@ -203,16 +209,15 @@ class Problema:
     def _asignaciones (self, variables):
         # Regresa todas las posibles asignaciones de las variables en la lista
         # de entrada en el estado actual.
-        c = []
         asignaciones = []
         for var in variables:
             a_var = []
             map (lambda x: a_var.append((var, x.valor)) if x.tipo == var.tipo, self.objetos)
-            if len (a_var) == 0:
+            if a_var == []:
                 # No se pudo unificar var
                 return []
             asignaciones.append(a_var)
-        return map (list, itertools.product (*asignaciones))
+        return map (list, product (*asignaciones))
 
     def _estado_satisface (self, condiciones):
         # Determina si el estado actual del problema satisface las condiciones
