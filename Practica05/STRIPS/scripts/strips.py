@@ -183,33 +183,41 @@ class Problema:
         aplicable B es True, False en otro caso) y L es la lista de variables
         con sus valores resultantes de la sustitución o [].
         """
-        sust = []
-        ap = False
-        for p in accion.precondiciones:
-            for a in self.estado:
-                if p.nombre == a.nombre and p.negativo == a.negativo:
-                    ap = True
-                    # Unificamos
-                    for t in zip (a.variables, p.variables):
-                        if t[1].valor == None:
-                            t[1].valor = t[0].valor
-                            sust.append ((t[1],t[0].valor))
-                        elif t[1].valor == t[0].valor:
-                            continue
-                        else:
-                            for v in p.variables:
-                                v.valor = None
-                            sust = []
-                            ap = False
-                            break
-        return (ap, sust)
+        vars = accion.parametros
+        if accion.variables != None:
+        	vars.extend (accion.variables)
+        asignaciones = self._asignaciones (vars)
+        if len(asignaciones) == 0:
+            # Alguna variable no se pudo unificar
+            return (False, asignaciones)
+        else
+            pass
 
-    def meta (self):
+    def es_meta (self):
         """
         Determina si el estado actual del problema satisface las condiciones del
         campo meta.
         """
-        for pred in self.meta:
+        return self._estado_satisface (self.meta)
+
+    def _asignaciones (self, variables):
+        # Regresa todas las posibles asignaciones de las variables en la lista
+        # de entrada en el estado actual.
+        c = []
+        asignaciones = []
+        for var in variables:
+            a_var = []
+            map (lambda x: a_var.append((var, x.valor)) if x.tipo == var.tipo, self.objetos)
+            if len (a_var) == 0:
+                # No se pudo unificar var
+                return []
+            asignaciones.append(a_var)
+        return map (list, itertools.product (*asignaciones))
+
+    def _estado_satisface (self, condiciones):
+        # Determina si el estado actual del problema satisface las condiciones
+        # dadas (lista de predicados aterrizados).
+        for pred in condiciones:
             r = False
             for s in self.estado:
                 if (pred.nombre == s.nombre and
@@ -234,6 +242,11 @@ class Problema:
                 l1[i].valor != l2[i].valor):
                 return False
         return True
+
+    def _match_variables (self, v1, v2):
+        return (v1.tipo == v2.tipo
+            and v1.nombre == v2.nombre
+            and v1.valor == v2.valor)
 
 if __name__ == '__main__':
     print("Crea aquí los objetos del problema y pide a la computadora que lo resuelva")
@@ -320,7 +333,7 @@ if __name__ == '__main__':
         Predicado ('occupied', [to_m]),
         Predicado ('at', [r_m, from_m], True)
         ])
-    k_l = Variable ('?k', 'crane'),
+    k_l = Variable ('?k', 'crane')
     c_l = Variable ('?c', 'container')
     r_l = Variable ('?r', 'robot')
     l_l = Variable ('?l', 'location')
