@@ -191,14 +191,12 @@ class Problema:
             # Alguna variable no se pudo unificar
             return (False, asignaciones)
         for sigma in asignaciones:
-            print (sigma)
             for sust in sigma:
                 sust[0].valor = sust[1]
             # Las precondiciones de la acción están aterrizadas
             if self._estado_satisface (accion.precondiciones):
                 for x in vars: x.valor = None
-                return (True, sust)
-            for x in vars: x.valor = None
+                return (True, sigma)
         return (False, [])
 
     def es_meta (self):
@@ -244,15 +242,9 @@ class Problema:
             return False
         for i in range(len(l1)):
             if (l1[i].tipo != l2[i].tipo or
-                l1[i].nombre != l2[i].nombre or
                 l1[i].valor != l2[i].valor):
                 return False
         return True
-
-    def _match_variables (self, v1, v2):
-        return (v1.tipo == v2.tipo
-            and v1.nombre == v2.nombre
-            and v1.valor == v2.valor)
 
 if __name__ == '__main__':
     print("Crea aquí los objetos del problema y pide a la computadora que lo resuelva")
@@ -476,18 +468,3 @@ if __name__ == '__main__':
         ])
 
     print (dwrpb1)
-
-#    # Ejemplo de cómo usar las clases
-#    p = Predicado('en-tripulación', [Variable('?m', 'marinero')])
-#    np = Predicado('en-tripulación', [Variable('?m', 'marinero')], True)
-#    dominio = Dominio('Barquito',
-#                      ['marinero'],
-#                      [p],
-#                      [Acción('desembarcar', [Variable('?m', 'marinero')], [p], [np])])
-#    print(dominio)
-#
-#    popeye = Objeto('Popeye', 'marinero')
-#    pobj = Predicado('en-tripulación', [Variable('?m', 'marinero', popeye)])
-#    npobj = Predicado('en-tripulación', [Variable('?m', 'marinero', popeye)], True)
-#    problema = Problema('baja-de-barquito', dominio, [popeye], [pobj], [npobj])
-#    print(problema)
