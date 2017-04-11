@@ -36,16 +36,16 @@ class Dominio:
     def __repr__(self):
         return self.__str__()
 
-    def copia (self):
-        """
-        Crea una copia del dominio self.
-        """
-        # nombre y tipos a usar son fijos.
-        # Se debe crear copia de los predicados y acciones.
-        return Predicado (self.nombre,
-            self.tipos,
-            [x.copia () for x in self.predicados],
-            [x.copia () for x in self.acciones])
+#    def copia (self):
+#        """
+#        Crea una copia del dominio self.
+#        """
+#        # nombre y tipos a usar son fijos.
+#        # Se debe crear copia de los predicados y acciones.
+#        return Predicado (self.nombre,
+#            self.tipos,
+#            [x.copia () for x in self.predicados],
+#            [x.copia () for x in self.acciones])
 
 class Variable:
     """ Variable tipada. """
@@ -144,18 +144,18 @@ class Acción:
     def __repr__(self):
         return self.__str__()
 
-    def copia (self):
-        """
-        Crea una copia de la acción self.
-        """
-        # nombre está fijo.
-        # parámetros, precondiciones y efectos se deben copiar.
-        # Las variables se copian en caso de tener.
-        return Acción (self.nombre,
-            [x.copia () for x in self.parámetros],
-            [x.copia () for x in self.precondiciones],
-            [x.copia () for x in self.efectos],
-            [x.copia () for x in self.vars] if self.vars != None else None)
+#    def copia (self):
+#        """
+#        Crea una copia de la acción self.
+#        """
+#        # nombre está fijo.
+#        # parámetros, precondiciones y efectos se deben copiar.
+#        # Las variables se copian en caso de tener.
+#        return Acción (self.nombre,
+#            [x.copia () for x in self.parámetros],
+#            [x.copia () for x in self.precondiciones],
+#            [x.copia () for x in self.efectos],
+#            [x.copia () for x in self.vars] if self.vars != None else None)
 
 # ------ Problema -----
 
@@ -222,6 +222,7 @@ class Problema:
         Regresa una tupla (B,L) donde B es un booleano (si la acción es
         aplicable B es True, False en otro caso) y L es la lista de variables
         con sus valores resultantes de la sustitución o [].
+        :param accion: la acción que se desea aplicar.
         """
         vars = accion.parámetros
         if accion.vars != None:
@@ -290,10 +291,10 @@ class Problema:
         """
         Crea una copia del problema self.
         """
-        # nombre, objetos y meta están fijos.
-        # El dominio y el estado se copia.
+        # nombre, objetos, dominio y meta están fijos.
+        # El estado se copia.
         return Problema (self.nombre,
-            self.dominio.copia (),
+            self.dominio,
             self.objetos,
             [x.copia () for x in self.estado],
             self.meta)
