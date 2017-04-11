@@ -226,7 +226,7 @@ class Problema:
         """
         vars = accion.parámetros
         if accion.vars != None:
-        	vars.extend (accion.vars)
+            vars.extend (accion.vars)
         asignaciones = self._asignaciones (vars)
         if asignaciones == []:
             # Alguna variable no se pudo unificar
@@ -255,7 +255,11 @@ class Problema:
                     if v.tipo == x.tipo and v.nombre == x.nombre:
                         v.valor = o
                         break
+            # Eliminamos la literal contraria del estado si
+            # esta existe.
+            sucesor._elimina_contrario (p)
             sucesor.estado.append (p)
+        return sucesor
 
     def es_meta (self):
         """
@@ -293,6 +297,15 @@ class Problema:
                 return r
         return True
 
+    def _elimina_contrario (self, predicado):
+        # Elimina la negación del predicado del estado si esta. No hace nada
+        # si la negación no está en el estado.
+        for p in self.estado:
+            if (p.nombre == predicado.nombre and
+                p.negativo != predicado.negativo and
+                self._variables_iguales (p.variables, predicado.variables)):
+                self.estado.remove (p)
+
     def _variables_iguales (self, l1, l2):
         # Determina si dos listas de variables son iguales, las variables
         # aparecen en el mismo orden, tienen el mismo tipo, nombre y valor.
@@ -315,6 +328,66 @@ class Problema:
             self.objetos,
             [x.copia () for x in self.estado],
             self.meta)
+
+class Solucion:
+    """
+    Clase para realizar una búsqueda en amplitud de la
+    solución del problema.
+    """
+
+    class _Nodo:
+        # Clase para nodos de búsqueda.
+
+        def __init__ (self, problema, padre = None, accion = None, sustitucion = None):
+            # Inicializa un nodo de búsqueda con el problema dado.
+            # Dada la acción y sustitución, si se aplica a padre.problema
+            # se llega al problema del nodo actual.
+            self.problema = problema
+            self.padre = padre
+            self.accion = accion
+            self.sustitucion = sustitución
+
+        def sucesores (self):
+            # Obtiene los sucesores del problema
+            if self.problema.es_meta (): return []
+            for a in self.problema.acciones:
+                dank = []
+                (b, sust) = self.problema.es_aplicable (a)
+                if b:
+                    dank.append (
+                        _Nodo (self.problema.aplica_accion (a, sust),
+                        self,
+                        a,
+                        sust))
+            return dank
+
+    def __init__ (self, problema):
+        """
+        Crea un objeto solución con una pila de tuplas (Pr,Pa,A,S)
+        donde Pr es el problema (con un cierto estado) y Pa es el
+        padre, A la acción y S la sustitución tal que al aplicarla
+        a Pa se llega a Pr.
+        :param problema: el problema.
+        """
+        self.listaAbierta = [_Nodo (problema)]
+
+    def exapnde (self, print? = False):
+        """
+        Expande el espacio de estados y regresa una lista de nodos
+        de búsqueda tal que el estado del problema que guardan
+        satisface las metas.
+        """
+        metas = []
+        while self.listaAbierta != []:
+            n_actual = self.listaAbierta.pop (0)
+            sucesores = n_actual.sucesores ()
+            self.listaAbierta.expand (sucesores)
+            for s in sucesores:
+                if s.problema.es_meta ():
+                    metas.append (s)
+                if print?:
+                    print (s.accion, "\n",s.sustitucion, "\n\n")
+        return metas
 
 if __name__ == '__main__':
     print("Crea aquí los objetos del problema y pide a la computadora que lo resuelva")
