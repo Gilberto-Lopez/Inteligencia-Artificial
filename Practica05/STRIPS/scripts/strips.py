@@ -232,13 +232,30 @@ class Problema:
             # Alguna variable no se pudo unificar
             return (False, asignaciones)
         for sigma in asignaciones:
-            for sust in sigma:
-                sust[0].valor = sust[1]
+            for (x, o) in sigma:
+                x.valor = o
             # Las precondiciones de la acción están aterrizadas
             if self._estado_satisface (accion.precondiciones):
                 for x in vars: x.valor = None
                 return (True, sigma)
         return (False, [])
+
+    def aplica_accion (self, accion, sustitucion):
+        """
+        Aplica la acción con la sustitución dada sobr el problema actual.
+        La acción debe ser aplicable con la sustitución dada. Regresa un
+        nuevo problema con la sustitución aplicada.
+        :param accion: la acción que se desea aplicar.
+        :param sustitucion: la sustitución que permite aplicar la acción.
+        """
+        sucesor = self.copia ()
+        for p in map (lambda x: x.copia (), accion.efectos):
+            for v in p.variables:
+                for (x, o) in sustitucion:
+                    if v.tipo == x.tipo and v.nombre == x.nombre:
+                        v.valor = o
+                        break
+            sucesor.estado.append (p)
 
     def es_meta (self):
         """
