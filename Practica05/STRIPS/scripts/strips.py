@@ -36,6 +36,17 @@ class Dominio:
     def __repr__(self):
         return self.__str__()
 
+    def copia (self):
+        """
+        Crea una copia del dominio self.
+        """
+        # nombre y tipos a usar son fijos.
+        # Se debe crear copia de los predicados y acciones.
+        return Predicado (self.nombre,
+            self.tipos,
+            [x.copia () for x in self.predicados],
+            [x.copia () for x in self.acciones])
+
 class Variable:
     """ Variable tipada. """
     def __init__(self, nombre, tipo, valor=None):
@@ -56,6 +67,12 @@ class Variable:
     def __repr__(self):
         return self.__str__()
 
+    def copia (self):
+        """
+        Crea una copia de la variable self.
+        """
+        # nombre, tipo y valor están fijos.
+        return Variable(self.nombre, self.tipo, self.valor)
 
 class Predicado:
     """ Representa un hecho. """
@@ -78,6 +95,16 @@ class Predicado:
 
     def __repr__(self):
         return self.__str__()
+
+    def copia (self):
+        """
+        Crea una copia del predicado self.
+        """
+        # nombre y negativo están fijos
+        # Las variables se deben copiar.
+        return Predicado (self.nombre,
+            [x.copia () for x in self.variables],
+            self.negativo)
 
 class Acción:
     """ Función de transición con su acción correspondiente. """
@@ -116,6 +143,19 @@ class Acción:
 
     def __repr__(self):
         return self.__str__()
+
+    def copia (self):
+        """
+        Crea una copia de la acción self.
+        """
+        # nombre está fijo.
+        # parámetros, precondiciones y efectos se deben copiar.
+        # Las variables se copian en caso de tener.
+        return Acción (self.nombre,
+            [x.copia () for x in self.parámetros],
+            [x.copia () for x in self.precondiciones],
+            [x.copia () for x in self.efectos],
+            [x.copia () for x in self.vars] if self.vars != None else None)
 
 # ------ Problema -----
 
@@ -245,6 +285,18 @@ class Problema:
                 l1[i].valor != l2[i].valor):
                 return False
         return True
+
+    def copia (self):
+        """
+        Crea una copia del problema self.
+        """
+        # nombre, objetos y meta están fijos.
+        # El dominio y el estado se copia.
+        return Problema (self.nombre,
+            self.dominio.copia (),
+            self.objetos,
+            [x.copia () for x in self.estado],
+            self.meta)
 
 if __name__ == '__main__':
     print("Crea aquí los objetos del problema y pide a la computadora que lo resuelva")
