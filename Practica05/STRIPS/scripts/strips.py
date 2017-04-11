@@ -345,17 +345,17 @@ class Solucion:
             self.problema = problema
             self.padre = padre
             self.accion = accion
-            self.sustitucion = sustitución
+            self.sustitucion = sustitucion
 
         def sucesores (self):
             # Obtiene los sucesores del problema
             if self.problema.es_meta (): return []
-            for a in self.problema.acciones:
+            for a in self.problema.dominio.acciones:
                 dank = []
                 (b, sust) = self.problema.es_aplicable (a)
                 if b:
                     dank.append (
-                        _Nodo (self.problema.aplica_accion (a, sust),
+                        Solucion._Nodo (self.problema.aplica_accion (a, sust),
                         self,
                         a,
                         sust))
@@ -369,9 +369,9 @@ class Solucion:
         a Pa se llega a Pr.
         :param problema: el problema.
         """
-        self.listaAbierta = [_Nodo (problema)]
+        self.listaAbierta = [Solucion._Nodo (problema)]
 
-    def exapnde (self, print? = False):
+    def expande (self, imprime = False):
         """
         Expande el espacio de estados y regresa una lista de nodos
         de búsqueda tal que el estado del problema que guardan
@@ -381,11 +381,11 @@ class Solucion:
         while self.listaAbierta != []:
             n_actual = self.listaAbierta.pop (0)
             sucesores = n_actual.sucesores ()
-            self.listaAbierta.expand (sucesores)
+            self.listaAbierta.extend (sucesores)
             for s in sucesores:
                 if s.problema.es_meta ():
                     metas.append (s)
-                if print?:
+                if imprime:
                     print (s.accion, "\n",s.sustitucion, "\n\n")
         return metas
 
@@ -611,3 +611,6 @@ if __name__ == '__main__':
         ])
 
     print (dwrpb1)
+
+    sol = Solucion (dwrpb1)
+    sol.expande (True)
