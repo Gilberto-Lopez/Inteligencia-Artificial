@@ -36,17 +36,6 @@ class Dominio:
     def __repr__(self):
         return self.__str__()
 
-#    def copia (self):
-#        """
-#        Crea una copia del dominio self.
-#        """
-#        # nombre y tipos a usar son fijos.
-#        # Se debe crear copia de los predicados y acciones.
-#        return Predicado (self.nombre,
-#            self.tipos,
-#            [x.copia () for x in self.predicados],
-#            [x.copia () for x in self.acciones])
-
 class Variable:
     """ Variable tipada. """
     def __init__(self, nombre, tipo, valor=None):
@@ -144,19 +133,6 @@ class Acción:
     def __repr__(self):
         return self.__str__()
 
-#    def copia (self):
-#        """
-#        Crea una copia de la acción self.
-#        """
-#        # nombre está fijo.
-#        # parámetros, precondiciones y efectos se deben copiar.
-#        # Las variables se copian en caso de tener.
-#        return Acción (self.nombre,
-#            [x.copia () for x in self.parámetros],
-#            [x.copia () for x in self.precondiciones],
-#            [x.copia () for x in self.efectos],
-#            [x.copia () for x in self.vars] if self.vars != None else None)
-
 # ------ Problema -----
 
 class Objeto:
@@ -224,21 +200,24 @@ class Problema:
         con sus valores resultantes de la sustitución o [].
         :param accion: la acción que se desea aplicar.
         """
-        vars = accion.parámetros
-        if accion.vars != None:
-            vars.extend (accion.vars)
+        vars = []
+        vars.extend (accion.parámetros + (accion.vars if accion.vars != None else [])) 
         asignaciones = self._asignaciones (vars)
         if asignaciones == []:
             # Alguna variable no se pudo unificar
             return (False, asignaciones)
+        flag = False;
+        sust = []
         for sigma in asignaciones:
             for (x, o) in sigma:
                 x.valor = o
             # Las precondiciones de la acción están aterrizadas
             if self._estado_satisface (accion.precondiciones):
-                for x in vars: x.valor = None
-                return (True, sigma)
-        return (False, [])
+                flag = True
+                sust = sigma
+                break
+        for x in vars: x.valor = None
+        return (flag, sust)
 
     def aplica_accion (self, accion, sustitucion):
         """
@@ -520,7 +499,7 @@ if __name__ == '__main__':
     take = Acción ('take',
         [k_t, c_t, p_t],
         [
-        Predicado ('belong', [k_u, l_u]),
+        Predicado ('belong', [k_t, l_t]),
         Predicado ('attached', [p_t, l_t]),
         Predicado ('empty', [k_t]),
         Predicado ('in', [c_t, p_t]),
@@ -611,6 +590,6 @@ if __name__ == '__main__':
         ])
 
     print (dwrpb1)
-
-    sol = Solucion (dwrpb1)
-    sol.expande (True)
+    
+#    sol = Solucion (dwrpb1)
+#    sol.expande (True)
