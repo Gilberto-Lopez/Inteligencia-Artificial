@@ -329,8 +329,8 @@ class Solucion:
         def sucesores (self):
             # Obtiene los sucesores del problema
             if self.problema.es_meta (): return []
+            dank = []
             for a in self.problema.dominio.acciones:
-                dank = []
                 (b, sust) = self.problema.es_aplicable (a)
                 if b:
                     dank.append (
@@ -591,5 +591,5 @@ if __name__ == '__main__':
 
     print (dwrpb1)
     
-#    sol = Solucion (dwrpb1)
-#    sol.expande (True)
+    sol = Solucion (dwrpb1)
+    sol.expande ()
