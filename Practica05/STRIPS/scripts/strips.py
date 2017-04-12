@@ -219,6 +219,25 @@ class Problema:
         for x in vars: x.valor = None
         return (flag, sust)
 
+    def _aplicable (self, accion):
+        vars = []
+        vars.extend (accion.parámetros + (accion.vars if accion.vars != None else [])) 
+        asignaciones = self._asignaciones (vars)
+        if asignaciones == []:
+            # Alguna variable no se pudo unificar
+            return (False, asignaciones)
+        flag = False;
+        sust = []
+        for sigma in asignaciones:
+            for (x, o) in sigma:
+                x.valor = o
+            # Las precondiciones de la acción están aterrizadas
+            if self._estado_satisface (accion.precondiciones):
+                flag = True
+                sust.append (sigma)
+        for x in vars: x.valor = None
+        return (flag, sust)        
+
     def aplica_accion (self, accion, sustitucion):
         """
         Aplica la acción con la sustitución dada sobr el problema actual.
@@ -331,13 +350,14 @@ class Solucion:
             if self.problema.es_meta (): return []
             dank = []
             for a in self.problema.dominio.acciones:
-                (b, sust) = self.problema.es_aplicable (a)
+                (b, sust) = self.problema._aplicable (a)
                 if b:
-                    dank.append (
-                        Solucion._Nodo (self.problema.aplica_accion (a, sust),
-                        self,
-                        a,
-                        sust))
+                    for s in sust:
+                        dank.append (
+                            Solucion._Nodo (self.problema.aplica_accion (a, s),
+                            self,
+                            a,
+                            s))
             return dank
 
     def __init__ (self, problema):
@@ -362,10 +382,12 @@ class Solucion:
             sucesores = n_actual.sucesores ()
             self.listaAbierta.extend (sucesores)
             for s in sucesores:
+                print(s.accion.nombre)
                 if s.problema.es_meta ():
                     metas.append (s)
-                if imprime:
-                    print (s.accion, "\n",s.sustitucion, "\n\n")
+            if imprime:
+                print (self.listaAbierta)
+                print (metas, "\n")
         return metas
 
 if __name__ == '__main__':
@@ -591,5 +613,5 @@ if __name__ == '__main__':
 
     print (dwrpb1)
     
-    sol = Solucion (dwrpb1)
-    sol.expande ()
+#    sol = Solucion (dwrpb1)
+#    sol.expande ()
