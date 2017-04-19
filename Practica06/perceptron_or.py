@@ -1,4 +1,4 @@
-from Practica06 import Perceptron
+from perceptron import Perceptron
 from itertools import product
 
 class PerceptronOR(Perceptron):
