@@ -37,7 +37,7 @@ class Perceptron (object):
 		:param entradas: Los valores de entrada para el perceptrón (ejemplar).
 		"""
 		if len (entradas) != self.n:
-			return float('nan')
+			raise Exception ('Número de entradas incorrecto.')
 		# El sesgo
 		entradas = [1] + entradas
 		suma_ponderada = sum ([w_i * x_i for (w_i, x_i) in zip (self.pesos, entradas)])
@@ -47,8 +47,6 @@ class Perceptron (object):
 		# Método auxiliar para entrenamiento(), calcula el error del perceptrón
 		# con un ejemplar dado y actualiza los pesos del perceptrón.
 		salida_perceptron = self.salida (ejemplar)
-		if math.isnan (salida_perceptron):
-			return salida_perceptron
 		error = salida - salida_perceptron
 		if error != 0:
 			self.pesos = [w_i + self.alpha * x_i * error for (w_i, x_i) in zip (self.pesos, ejemplar)]
@@ -65,7 +63,6 @@ class Perceptron (object):
 		while True:
 			for (ejemplar_j, salida_j) in zip (conjunto, salida):
 				error_t = self._entrenamiento (ejemplar_j, salida_j)
-				if math.isnan (error_t):
-					return
 				if abs (error_t) <= self.error:
 					return
+				# Añadir cláusula de escape para evitar entrar en ciclos infinitos.
