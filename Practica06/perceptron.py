@@ -50,20 +50,23 @@ class Perceptron (object):
 			self.pesos = [w_i + self.alpha * x_i * error for (w_i, x_i) in zip (self.pesos, ejemplar)]
 		return error
 
-	def entrenamiento (self, conjunto, salidas):
+	def entrenamiento (self, conjunto, salidas, iteraciones = 100):
 		"""
 		Proceso de entrenamiento de perceptrón. Itera sobre el conjunto de
-		ejemplares de entrada las veces necesarias hasta minimizar el error
-		de la salida del perceptrón por debajo del umbral de error permitido.
+		ejemplares de entrada el número de iteraciones dado o hasta que el
+		error de la salida del perceptrón se haya minimizado por debajo del
+		umbral de error permitido. El máximo de iteraciones permitidas es
+		100 por defecto.
 		:param conjunto: El conjunto de ejemplares para el entrenamiento.
 		:param salidas: El conjunto de salidas esperadas para cada ejemplar.
+		:param iteraciones: El número máximo de iteraciones permitidas.
 		"""
 		# Valores absolutos de los errores de la iteración
-		errores = [0 for _ in range (self.n)]
-		while True:
-			for i in range (self.n):
+		m = len (conjunto)
+		errores = [0 for _ in range (m)]
+		for _ in range (iteraciones):
+			for i in range (m):
 				error_t = self.__entrenamiento (conjunto[i], salidas[i])
 				errores[i] = abs (error_t)
-			if sum (errores) / float (self.n) <= self.error:
+			if sum (errores) / float (m) <= self.error:
 				return
-			# Añadir cláusula de escape para evitar entrar en ciclos infinitos.
