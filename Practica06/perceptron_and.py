@@ -13,5 +13,5 @@ class PerceptronAND(Perceptron):
 		escalón.
 		"""
 		super (PerceptronAND, self).__init__ (3,lambda x: 0 if x < 0 else 1)
-		self.tabla_and = map(list, product (*([[0,1]]*3)))
-		self.salida = [0 for _ in range(7)] + [1]
+		self.tabla_and = list (map (list, product (*([[0,1]]*3))))
+		self.salida_and = [0 for _ in range(7)] + [1]

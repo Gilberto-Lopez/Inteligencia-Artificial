@@ -13,5 +13,5 @@ class PerceptronOR(Perceptron):
 		escalón.
 		"""
 		super (PerceptronOR, self).__init__ (3,lambda x: 0 if x < 0 else 1)
-		self.tabla_or = map(list, product (*([[0,1]]*3)))
-		self.salida = [0] + [1 for _ in range(7)]
+		self.tabla_or = list (map (list, product (*([[0,1]]*3))))
+		self.salida_or = [0] + [1 for _ in range(7)]
