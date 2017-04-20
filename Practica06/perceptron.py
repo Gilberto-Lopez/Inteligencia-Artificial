@@ -10,22 +10,21 @@ class Perceptron (object):
 		"""
 		Inicializa un perceptrón con una cantidad fija de pesos para las
 		entradas, establecidos como números aleatorios en el intervalo
-		[-0.5,0.5], y un umbral para comparar la salida del perceptrón en ese
-		mismo intervalo. También recibe la función de activación para el
-		preceptrón, la tasa de aprendizaje (en el intervalo (0,1)) y el umbral
-		de error para el entrenamiento (no negativo).
+		[-0.5,0.5], y un umbral para el sesgo del perceptrón en ese mismo
+		intervalo. También recibe la función de activación para el preceptrón,
+		la tasa de aprendizaje (en el intervalo (0,1)) y el umbral de error
+		para el entrenamiento (no negativo).
 		:param n: El número de entradas del perceptrón.
 		:param activacion: La función de activación.
 		:param tasa_aprendizaje: La tasa de aprendizaje.
 		:param error: Umbral de error para el entrenamiento.
 		"""
 		self.n = n
-		# n+1 pesos por el sesgo.
-		self.pesos = [uniform (-0.5, 0.5) for _ in range (n+1)]
+		self.pesos = [uniform (-0.5, 0.5) for _ in range (n)]
 		self.theta = uniform (-0.5, 0.5)
 		self.f = activacion
 		self.alpha = tasa_aprendizaje if 0 < tasa_aprendizaje < 1 else 0.1
-		self.error = error
+		self.error = abs (error)
 
 	def salida (self, entradas):
 		"""
@@ -38,17 +37,16 @@ class Perceptron (object):
 		"""
 		if len (entradas) != self.n:
 			raise Exception ('Número de entradas incorrecto.')
-		# El sesgo
-		entradas = [1] + entradas
 		suma_ponderada = sum ([w_i * x_i for (w_i, x_i) in zip (self.pesos, entradas)])
 		return self.f (suma_ponderada - self.theta)
 
-	def _entrenamiento (self, ejemplar, salida):
+	def __entrenamiento (self, ejemplar, salida_esperada):
 		# Método auxiliar para entrenamiento(), calcula el error del perceptrón
 		# con un ejemplar dado y actualiza los pesos del perceptrón.
 		salida_perceptron = self.salida (ejemplar)
-		error = salida - salida_perceptron
+		error = salida_esperada - salida_perceptron
 		if error != 0:
+			self.theta = self.theta + self.alpha * error
 			self.pesos = [w_i + self.alpha * x_i * error for (w_i, x_i) in zip (self.pesos, ejemplar)]
 		return error
 
@@ -62,7 +60,7 @@ class Perceptron (object):
 		"""
 		while True:
 			for (ejemplar_j, salida_j) in zip (conjunto, salida):
-				error_t = self._entrenamiento (ejemplar_j, salida_j)
+				error_t = self.__entrenamiento (ejemplar_j, salida_j)
 				if abs (error_t) <= self.error:
 					return
 				# Añadir cláusula de escape para evitar entrar en ciclos infinitos.
