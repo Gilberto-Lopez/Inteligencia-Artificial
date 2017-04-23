@@ -1,6 +1,6 @@
-from perceptron_and import PerceptronAND
-from perceptron_or import PerceptronOR
+from perceptron import Perceptron
 from itertools import product
+from random import randint, choice
 
 def and_list (list):
 	for e in list:
@@ -14,6 +14,12 @@ def or_list (list):
 			return e
 	return 0
 
+# Ejemplares de entrenamiento (eliminar repeticiones)
+#	for _ in range (randint (0, len(tabla)-1)):
+#		<ej_nombre>.append (choice (tabla))
+
+# Unit step function
+f = lambda x : 0 if x < 0 else 1
 
 if __name__ == '__main__':
 	# Conjunto de entradas para probar los perceptrones.
@@ -40,40 +46,40 @@ if __name__ == '__main__':
 	salidas_2_and = salida_and
 	salidas_2_or = salida_or
 
-#	# 3.
-#	cjto_3 = 
-#	salidas_3_and = map (and_list, cjto_3)
-#	salidas_3_or = map (or_list, cjto_3)
+	# 3.
+	cjto_3 = [[1, 0, 1], [0, 1, 0], [1, 0, 0], [0, 0, 1]]
+	salidas_3_and = list (map (and_list, cjto_3))
+	salidas_3_or = list (map (or_list, cjto_3))
 
-#	# 4.
-#	cjto_4 = 
-#	salidas_4_and = map (and_list, cjto_4)
-#	salidas_4_or = map (or_list, cjto_4)
+	# 4.
+	cjto_4 = [[0, 1, 1], [0, 0, 0], [0, 1, 0], [1, 1, 1]]
+	salidas_4_and = list (map (and_list, cjto_4))
+	salidas_4_or = list (map (or_list, cjto_4))
 
-#	# 5.
-#	cjto_5 = 
-#	salidas_5_and = map (and_list, cjto_5)
-#	salidas_5_or = map (or_list, cjto_5)
+	# 5.
+	cjto_5 = [[1, 1, 0], [0, 1, 0], [1, 1, 1]]
+	salidas_5_and = list (map (and_list, cjto_5))
+	salidas_5_or = list (map (or_list, cjto_5))
 
 	# Perceptrones AND
 
-#	# 1.
-#	print ('-----Perceptron AND 1')
-#	p_and_1 = PerceptronAND ()
-#	print ('Tasa de aprendizaje:\t', p_and_1.alpha)
-#	print ('Pesos:\t', [p_and_1.theta] + p_and_1.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_1, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_and_1.entrenamiento (cjto_1, salidas_1_and)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
-#		out = p_and_1.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 1.
+	print ('***** Perceptron AND 1 *****')
+	p_and_1 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_and_1.alpha)
+	print ('Pesos:\t', [p_and_1.theta] + p_and_1.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_1, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_and_1.entrenamiento (cjto_1, salidas_1_and)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
+		out = p_and_1.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
 
 	# 2.
-	print ('-----Perceptron AND 2')
-	p_and_2 = PerceptronAND ()
+	print ('***** Perceptron AND 2 *****')
+	p_and_2 = Perceptron (3, f, 0.2, 0.5)
 	print ('Tasa de aprendizaje:\t', p_and_2.alpha)
 	print ('Pesos:\t', [p_and_2.theta] + p_and_2.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_2, '\n')
@@ -85,116 +91,116 @@ if __name__ == '__main__':
 		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
 	print ('\n')
 
-#	# 3.
-#	print ('-----Perceptron AND 3')
-#	p_and_3 = PerceptronAND ()
-#	print ('Tasa de aprendizaje:\t', p_and_3.alpha)
-#	print ('Pesos:\t', [p_and_3.theta] + p_and_3.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_3, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_and_3.entrenamiento (cjto_3, salidas_3_and)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
-#		out = p_and_3.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 3.
+	print ('***** Perceptron AND 3 *****')
+	p_and_3 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_and_3.alpha)
+	print ('Pesos:\t', [p_and_3.theta] + p_and_3.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_3, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_and_3.entrenamiento (cjto_3, salidas_3_and)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
+		out = p_and_3.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
 
-#	# 4.
-#	print ('-----Perceptron AND 4')
-#	p_and_4 = PerceptronAND ()
-#	print ('Tasa de aprendizaje:\t', p_and_4.alpha)
-#	print ('Pesos:\t', [p_and_4.theta] + p_and_4.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_4, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_and_4.entrenamiento (cjto_4, salidas_4_and)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
-#		out = p_and_4.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 4.
+	print ('***** Perceptron AND 4 *****')
+	p_and_4 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_and_4.alpha)
+	print ('Pesos:\t', [p_and_4.theta] + p_and_4.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_4, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_and_4.entrenamiento (cjto_4, salidas_4_and)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
+		out = p_and_4.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
 
-#	# 5.
-#	print ('-----Perceptron AND 5')
-#	p_and_5 = PerceptronAND ()
-#	print ('Tasa de aprendizaje:\t', p_and_5.alpha)
-#	print ('Pesos:\t', [p_and_5.theta] + p_and_5.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_5, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_and_5.entrenamiento (cjto_5, salidas_5_and)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
-#		out = p_and_5.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 5.
+	print ('***** Perceptron AND 5 *****')
+	p_and_5 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_and_5.alpha)
+	print ('Pesos:\t', [p_and_5.theta] + p_and_5.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_5, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_and_5.entrenamiento (cjto_5, salidas_5_and)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
+		out = p_and_5.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
 
-#	# Perceptrones OR
+	# Perceptrones OR
 
-#	# 1.
-#	print ('-----Perceptron OR 1')
-#	p_or_1 = PerceptronOR ()
-#	print ('Tasa de aprendizaje:\t', p_or_1.alpha)
-#	print ('Pesos:\t', [p_or_1.theta] + p_or_1.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_1, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_or_1.entrenamiento (cjto_1, salidas_1_or)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-#		out = p_or_1.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 1.
+	print ('***** Perceptron OR 1 *****')
+	p_or_1 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_or_1.alpha)
+	print ('Pesos:\t', [p_or_1.theta] + p_or_1.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_1, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_or_1.entrenamiento (cjto_1, salidas_1_or)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
+		out = p_or_1.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
 
-#	# 2.
-#	print ('-----Perceptron OR 2')
-#	p_or_2 = PerceptronOR ()
-#	print ('Tasa de aprendizaje:\t', p_or_2.alpha)
-#	print ('Pesos:\t', [p_or_2.theta] + p_or_2.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_2, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_or_2.entrenamiento (cjto_2, salidas_2_or)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-#		out = p_or_1.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 2.
+	print ('***** Perceptron OR 2 *****')
+	p_or_2 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_or_2.alpha)
+	print ('Pesos:\t', [p_or_2.theta] + p_or_2.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_2, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_or_2.entrenamiento (cjto_2, salidas_2_or)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
+		out = p_or_1.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
 
-#	# 3.
-#	print ('-----Perceptron OR 3')
-#	p_or_3 = PerceptronOR ()
-#	print ('Tasa de aprendizaje:\t', p_or_3.alpha)
-#	print ('Pesos:\t', [p_or_3.theta] + p_or_3.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_3, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_or_3.entrenamiento (cjto_3, salidas_3_or)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-#		out = p_or_1.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 3.
+	print ('***** Perceptron OR 3 *****')
+	p_or_3 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_or_3.alpha)
+	print ('Pesos:\t', [p_or_3.theta] + p_or_3.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_3, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_or_3.entrenamiento (cjto_3, salidas_3_or)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
+		out = p_or_1.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
 
-#	# 4.
-#	print ('-----Perceptron OR 4')
-#	p_or_4 = PerceptronOR ()
-#	print ('Tasa de aprendizaje:\t', p_or_4.alpha)
-#	print ('Pesos:\t', [p_or_4.theta] + p_or_4.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_4, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_or_4.entrenamiento (cjto_4, salidas_4_or)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-#		out = p_or_1.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 4.
+	print ('***** Perceptron OR 4 *****')
+	p_or_4 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_or_4.alpha)
+	print ('Pesos:\t', [p_or_4.theta] + p_or_4.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_4, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_or_4.entrenamiento (cjto_4, salidas_4_or)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
+		out = p_or_1.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
 
-#	# 5.
-#	print ('-----Perceptron OR 5')
-#	p_or_5 = PerceptronOR ()
-#	print ('Tasa de aprendizaje:\t', p_or_5.alpha)
-#	print ('Pesos:\t', [p_or_5.theta] + p_or_5.pesos)
-#	print ('Conjunto de entrenamiento:\t', cjto_5, '\n')
-#	print ('-----Proceso de entrenamiento\n')
-#	p_or_5.entrenamiento (cjto_5, salidas_5_or)
-#	print ('-----Pruebas\n')
-#	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-#		out = p_or_1.salida (ej)
-#		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
-#	print ('\n')
+	# 5.
+	print ('***** Perceptron OR 5 *****')
+	p_or_5 = Perceptron (3, f, 0.2, 0.5)
+	print ('Tasa de aprendizaje:\t', p_or_5.alpha)
+	print ('Pesos:\t', [p_or_5.theta] + p_or_5.pesos)
+	print ('Conjunto de entrenamiento:\t', cjto_5, '\n')
+	print ('-----Proceso de entrenamiento\n')
+	p_or_5.entrenamiento (cjto_5, salidas_5_or)
+	print ('-----Pruebas\n')
+	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
+		out = p_or_1.salida (ej)
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
