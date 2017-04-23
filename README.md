@@ -8,3 +8,4 @@ Prácticas:
 3. Backtracking.
 4. Algoritmo A*.
 5. STRIPS.
+6. Perceptrón.
