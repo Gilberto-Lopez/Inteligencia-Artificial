@@ -50,12 +50,12 @@ class Perceptron (object):
 
 		error = salida_esperada - salida_perceptron
 		if error != 0:
-			self.theta = self.theta + self.alpha * error
+			self.theta = self.theta - self.alpha * error
 			self.pesos = [w_i + self.alpha * x_i * error for (w_i, x_i) in zip (self.pesos, ejemplar)]
 
 			# *** El proceso de entrenamiento se muestra en pantalla.
 			print ('Pesos actualizados:\t', [self.theta] + self.pesos)
-		return error
+		return abs (error)
 
 	def entrenamiento (self, conjunto, salidas, iteraciones = 100):
 		"""
@@ -73,7 +73,6 @@ class Perceptron (object):
 		errores = [0 for _ in range (m)]
 		for _ in range (iteraciones):
 			for i in range (m):
-				error_t = self.__entrenamiento (conjunto[i], salidas[i])
-				errores[i] = abs (error_t)
+				errores[i] = self.__entrenamiento (conjunto[i], salidas[i])
 			if sum (errores) / m <= self.error:
 				return
