@@ -1,4 +1,5 @@
 from perceptron import Perceptron
+from redxor import RedXOR
 from itertools import product
 from random import randint, choice
 
@@ -203,4 +204,16 @@ if __name__ == '__main__':
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
 		out = p_or_5.salida (ej)
 		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
+	print ('\n')
+
+	# Red neuronal que calcula el XOR de dos variables
+
+	print ('***** Red Neuronal XOR *****')
+	print ('-----Inicialización\n')
+	rxor = RedXOR ()
+	print ('-----Pruebas\n')
+	for ej in rxor.tabla:
+		out = rxor.salida (ej)
+		salida_esperada = sum (ej) % 2
+		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', salida_esperada)
 	print ('\n')
