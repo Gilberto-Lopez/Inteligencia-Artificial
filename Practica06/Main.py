@@ -65,12 +65,12 @@ if __name__ == '__main__':
 
 	# 1.
 	print ('***** Perceptron AND 1 *****')
-	p_and_1 = Perceptron (3, f, 0.2, 0.5)
+	p_and_1 = Perceptron (3, f, 0.01, 0)
 	print ('Tasa de aprendizaje:\t', p_and_1.alpha)
 	print ('Pesos:\t', [p_and_1.theta] + p_and_1.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_1, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_and_1.entrenamiento (cjto_1, salidas_1_and)
+	p_and_1.entrenamiento (cjto_1, salidas_1_and, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
 		out = p_and_1.salida (ej)
@@ -79,12 +79,12 @@ if __name__ == '__main__':
 
 	# 2.
 	print ('***** Perceptron AND 2 *****')
-	p_and_2 = Perceptron (3, f, 0.2, 0.5)
+	p_and_2 = Perceptron (3, f, 0.1, 0)
 	print ('Tasa de aprendizaje:\t', p_and_2.alpha)
 	print ('Pesos:\t', [p_and_2.theta] + p_and_2.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_2, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_and_2.entrenamiento (cjto_2, salidas_2_and)
+	p_and_2.entrenamiento (cjto_2, salidas_2_and, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
 		out = p_and_2.salida (ej)
@@ -93,12 +93,12 @@ if __name__ == '__main__':
 
 	# 3.
 	print ('***** Perceptron AND 3 *****')
-	p_and_3 = Perceptron (3, f, 0.2, 0.5)
+	p_and_3 = Perceptron (3, f, 0.01, 0)
 	print ('Tasa de aprendizaje:\t', p_and_3.alpha)
 	print ('Pesos:\t', [p_and_3.theta] + p_and_3.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_3, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_and_3.entrenamiento (cjto_3, salidas_3_and)
+	p_and_3.entrenamiento (cjto_3, salidas_3_and, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
 		out = p_and_3.salida (ej)
@@ -107,12 +107,12 @@ if __name__ == '__main__':
 
 	# 4.
 	print ('***** Perceptron AND 4 *****')
-	p_and_4 = Perceptron (3, f, 0.2, 0.5)
+	p_and_4 = Perceptron (3, f, 0.01, 0)
 	print ('Tasa de aprendizaje:\t', p_and_4.alpha)
 	print ('Pesos:\t', [p_and_4.theta] + p_and_4.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_4, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_and_4.entrenamiento (cjto_4, salidas_4_and)
+	p_and_4.entrenamiento (cjto_4, salidas_4_and, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
 		out = p_and_4.salida (ej)
@@ -121,12 +121,12 @@ if __name__ == '__main__':
 
 	# 5.
 	print ('***** Perceptron AND 5 *****')
-	p_and_5 = Perceptron (3, f, 0.2, 0.5)
+	p_and_5 = Perceptron (3, f, 0.1, 0)
 	print ('Tasa de aprendizaje:\t', p_and_5.alpha)
 	print ('Pesos:\t', [p_and_5.theta] + p_and_5.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_5, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_and_5.entrenamiento (cjto_5, salidas_5_and)
+	p_and_5.entrenamiento (cjto_5, salidas_5_and, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_and):
 		out = p_and_5.salida (ej)
@@ -137,12 +137,12 @@ if __name__ == '__main__':
 
 	# 1.
 	print ('***** Perceptron OR 1 *****')
-	p_or_1 = Perceptron (3, f, 0.2, 0.5)
+	p_or_1 = Perceptron (3, f, 0.3, 0)
 	print ('Tasa de aprendizaje:\t', p_or_1.alpha)
 	print ('Pesos:\t', [p_or_1.theta] + p_or_1.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_1, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_or_1.entrenamiento (cjto_1, salidas_1_or)
+	p_or_1.entrenamiento (cjto_1, salidas_1_or, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
 		out = p_or_1.salida (ej)
@@ -151,56 +151,56 @@ if __name__ == '__main__':
 
 	# 2.
 	print ('***** Perceptron OR 2 *****')
-	p_or_2 = Perceptron (3, f, 0.2, 0.5)
+	p_or_2 = Perceptron (3, f, 0.3, 0)
 	print ('Tasa de aprendizaje:\t', p_or_2.alpha)
 	print ('Pesos:\t', [p_or_2.theta] + p_or_2.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_2, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_or_2.entrenamiento (cjto_2, salidas_2_or)
+	p_or_2.entrenamiento (cjto_2, salidas_2_or, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-		out = p_or_1.salida (ej)
+		out = p_or_2.salida (ej)
 		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
 	print ('\n')
 
 	# 3.
 	print ('***** Perceptron OR 3 *****')
-	p_or_3 = Perceptron (3, f, 0.2, 0.5)
+	p_or_3 = Perceptron (3, f, 0.1, 0)
 	print ('Tasa de aprendizaje:\t', p_or_3.alpha)
 	print ('Pesos:\t', [p_or_3.theta] + p_or_3.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_3, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_or_3.entrenamiento (cjto_3, salidas_3_or)
+	p_or_3.entrenamiento (cjto_3, salidas_3_or, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-		out = p_or_1.salida (ej)
+		out = p_or_3.salida (ej)
 		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
 	print ('\n')
 
 	# 4.
 	print ('***** Perceptron OR 4 *****')
-	p_or_4 = Perceptron (3, f, 0.2, 0.5)
+	p_or_4 = Perceptron (3, f, 0.1, 0)
 	print ('Tasa de aprendizaje:\t', p_or_4.alpha)
 	print ('Pesos:\t', [p_or_4.theta] + p_or_4.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_4, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_or_4.entrenamiento (cjto_4, salidas_4_or)
+	p_or_4.entrenamiento (cjto_4, salidas_4_or, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-		out = p_or_1.salida (ej)
+		out = p_or_4.salida (ej)
 		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
 	print ('\n')
 
 	# 5.
 	print ('***** Perceptron OR 5 *****')
-	p_or_5 = Perceptron (3, f, 0.2, 0.5)
+	p_or_5 = Perceptron (3, f, 0.03, 0)
 	print ('Tasa de aprendizaje:\t', p_or_5.alpha)
 	print ('Pesos:\t', [p_or_5.theta] + p_or_5.pesos)
 	print ('Conjunto de entrenamiento:\t', cjto_5, '\n')
 	print ('-----Proceso de entrenamiento\n')
-	p_or_5.entrenamiento (cjto_5, salidas_5_or)
+	p_or_5.entrenamiento (cjto_5, salidas_5_or, 200)
 	print ('-----Pruebas\n')
 	for (ej, s) in zip (cjto_entradas, cjto_salidas_or):
-		out = p_or_1.salida (ej)
+		out = p_or_5.salida (ej)
 		print ('Entrada:\t', ej, '\n\tSalida:\t', out, '\tSalida esperada:\t', s)
 	print ('\n')
