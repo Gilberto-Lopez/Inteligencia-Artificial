@@ -8,6 +8,8 @@ public class Poblacion {
 		private static final Random RAND = new Random ();
 		// Representación del individuo
 		private int[] representacion;
+		// Aptitud del individuo;
+		private int apt;
 
 		/*
 		 * Crea un individuo con una representación de tamaño TAM.
@@ -31,11 +33,18 @@ public class Poblacion {
 		}
 
 		/*
-		 * Calcula la aptitud del individuo.
+		 * Regresa la aptitud del individuo.
 		 * Su aptitud es el número de parejas de reinas que se atacan entre sí.
 		 */
 		public int aptitud () {
-			return 0;
+			return apt;
+		}
+
+		/*
+		 * Calcula la aptitud del individuo.
+		 */
+		public void asignaAptitud () {
+			apt = 0;
 		}
 
 		/*
@@ -67,7 +76,7 @@ public class Poblacion {
 	// Tamaño del tablero
 	private static final int TABLERO = 8;
 
-	// Cantidad de individuos
+	// Cantidad de individuos para la población
 	private int m;
 	// Mutación
 	private double p;
@@ -75,15 +84,46 @@ public class Poblacion {
 	private ArrayList<Individuo> individuos;
 
 	/**
-	 * Crea una nueva población con la cantidad de individuos especificada.
+	 * Crea una nueva población vacía con un tamaño máximo dado por la cantidad
+	 * de individuos dada.
 	 * @param individuos La cantidad de individuos.
 	 */
 	public Poblacion (int individuos) {
 		this.m = individuos;
-		this.individuos = new ArrayList<>(individuos);
-		for (int i = 0; i < individuos; i++) {
-			this.individuos.add (new Individuo (TABLERO));
+		this.individuos = new ArrayList<> (individuos);
+	}
+
+	/**
+	 * Crea una nueva población con la cantidad de individuos especificada.
+	 * @param individuos La cantidad de individuos.
+	 * @param representación El tamaño de la representación de los individuos.
+	 */
+	public Poblacion (int individuos, int representacion) {
+		Poblacion (individuos);
+		while (individuos-- > 0)
+			this.individuos.add (new Individuo (representacion));
+	}
+
+	/**
+	 * Agrega un nuevo individuo a la población de ser posible.
+	 * @param i El individuo.
+	 */
+	public void agrega (Individuo i) {
+		if (individuos.size () < m)
+			individuos.add (i);
+	}
+
+	/**
+	 * Calcula la aptitud de cada individuo y regresa la suma.
+	 * @return La suma de las aptitudes.
+	 */
+	public int asignarAptitud () {
+		int ruleta = 0;
+		for (Individuo i : individuos) {
+			i.asignaAptitud ();
+			ruleta += i.aptitud ();
 		}
+		return ruleta;
 	}
 
 }
