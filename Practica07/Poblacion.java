@@ -1,15 +1,17 @@
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Poblacion {
 
-	private class Individuo {
+	private static class Individuo {
 
-		// Random para números aleatorios
-		private static final Random RAND = new Random ();
 		// Representación del individuo
 		private int[] representacion;
 		// Aptitud del individuo;
 		private int apt;
+
+		// Constructor vacío privado
+		private Individuo () {}
 
 		/*
 		 * Crea un individuo con una representación de tamaño TAM.
@@ -18,7 +20,7 @@ public class Poblacion {
 		public Individuo (int tam) {
 			this.representacion = new int[tam];
 			for (int i = 0; i < tam; i++)
-				this.representacion[i] = RAND.nextInt (tam);
+				this.representacion[i] = Poblacion.RAND.nextInt (tam);
 		}
 
 		/*
@@ -28,8 +30,8 @@ public class Poblacion {
 		public void mutacion (double p) {
 			int m = representacion.length, i = 0;
 			while (i < m)
-				if (RAND.nextDouble <= p)
-					representacion[i++] = RAND.nextInt (m);
+				if (Poblacion.RAND.nextDouble () <= p)
+					representacion[i++] = Poblacion.RAND.nextInt (m);
 		}
 
 		/*
@@ -48,11 +50,24 @@ public class Poblacion {
 		}
 
 		/*
+		 * Regresa la representación en String del individuo.
+		 */
+		@Override
+		public String toString () {
+			String repr = "[";
+			int i = 0;
+			while (i < representacion.length -1)
+				repr += (representacion[i++]+1) + " ";
+			repr += (representacion[i]+1) + "]";
+			return repr;
+		}
+
+		/*
 		 * Recombina dos individuos para generar uno nuevo.
 		 */
 		public static Individuo recombinacion (Individuo i1, Individuo i2) {
 			int t = i1.representacion.length;
-			int corte = RAND.nextInt (t);
+			int corte = Poblacion.RAND.nextInt (t);
 			Individuo nuevo = new Individuo ();
 			nuevo.representacion = new int[t];
 			int i = 0;
@@ -65,6 +80,8 @@ public class Poblacion {
 
 	}
 
+	// Para números aleatorios
+	private static final Random RAND = new Random ();
 	// Tamaño de población
 	private static final int T_POBLACION = 50;
 	// Factor de elitismo
@@ -82,6 +99,8 @@ public class Poblacion {
 	private double p;
 	// Conjunto de individuos
 	private ArrayList<Individuo> individuos;
+	// Suma de las aptitudes
+	private int sumaApt;
 
 	/**
 	 * Crea una nueva población vacía con un tamaño máximo dado por la cantidad
@@ -99,9 +118,16 @@ public class Poblacion {
 	 * @param representación El tamaño de la representación de los individuos.
 	 */
 	public Poblacion (int individuos, int representacion) {
-		Poblacion (individuos);
+		this (individuos);
 		while (individuos-- > 0)
 			this.individuos.add (new Individuo (representacion));
+	}
+
+	/**
+	 * Regresa la cantidad de individuos en la población.
+	 */
+	public int getIndividuos () {
+		return this.individuos.size ();
 	}
 
 	/**
@@ -113,17 +139,101 @@ public class Poblacion {
 			individuos.add (i);
 	}
 
-	/**
-	 * Calcula la aptitud de cada individuo y regresa la suma.
-	 * @return La suma de las aptitudes.
+	/* //JavaDoc
+	 * Regresa los n mejores ejemplares de la población. n debe ser menor o
+	 * o igual al tamaño de la población. Las aptitudes deben ser asignadas
+	 * previamente.
+	 * @return Los n mejores ejemplares. NULL si n es mayor al tamaño de la
+	 *         población o menor a 1.
 	 */
-	public int asignarAptitud () {
-		int ruleta = 0;
+	/*
+	public ArrayList<Individuo> elitismo (int n) {
+		if (n > m || n < 1)
+			return null;
+		ArrayList<Individuo> l = new ArrayList<> (n);
+		int max = Integer.MAX_VALUE;
+		while (n-- > 0) {
+			int mayor = 0;
+			int j = 0;
+			for (int i = 0; i < m; i++) {
+				Individuo t = individuos.get (i);
+				int apt = t.aptitud ();
+				if (apt <= max && apt >= mayor && !l.contains (t)) {
+					mayor = apt;
+					j = i;
+				}
+			}
+			max = mayor;
+			l.add (individuos.get (j));
+		}
+		return l;
+	}
+	*/
+
+	/**
+	 * Calcula la aptitud de cada individuo.
+	 */
+	public void asignarAptitud () {
 		for (Individuo i : individuos) {
 			i.asignaAptitud ();
-			ruleta += i.aptitud ();
+			sumaApt += i.aptitud ();
 		}
-		return ruleta;
+	}
+
+	/**
+	 * Selecciona aleatoriamente un individuo de la población mediante la
+	 * selección de ruleta. Se asume que las aptitudes de los individuos ya
+	 * fueron asignadas.
+	 * @param El individuo.
+	 */
+	public Individuo seleccion () {
+		while (true) {
+			int i = RAND.nextInt (m);
+			Individuo t = individuos.get (i);
+			double pi = ((double) t.aptitud ()) / sumaApt;
+			if (RAND.nextDouble () <= pi)
+				return t;
+		}
+	}
+
+	/**
+	 * Regresa el mejor individuo de la población.
+	 * @return El mejor individuo.
+	 */
+	public Individuo mejorIndividuo () {
+		int mayor = 0, j = 0;
+		for (int i = 0; i < m; i++) {
+			Individuo t = individuos.get (i);
+			int apt = t.aptitud ();
+			if (apt > mayor) {
+				mayor = apt;
+				j = i;
+			}
+		}
+		return individuos.get (j);
+	}
+
+	public static void main(String[] args) {
+		Poblacion p = new Poblacion (T_POBLACION, TABLERO);
+		p.asignarAptitud ();
+		for (int i = 0; i < ITERACIONES; i++) {
+			Poblacion nuevaP = new Poblacion (T_POBLACION);
+			//for (Individuo s : p.elitismo (ELITISMO))
+			//	nuevaP.agrega (s);
+			nuevaP.agrega (p.mejorIndividuo ());
+			while (nuevaP.getIndividuos () < T_POBLACION) {
+				Individuo i1 = p.seleccion ();
+				Individuo i2 = p.seleccion ();
+				Individuo hijo = Individuo.recombinacion (i1, i2);
+				hijo.mutacion (MUTACION);
+				nuevaP.agrega (hijo);	
+			}
+			p = nuevaP;
+			p.asignarAptitud ();
+			if (i % 50 == 0)
+				System.out.printf ("Generacion %d: %s\n", i+1, p.mejorIndividuo ());
+		}
+		System.out.println (p.mejorIndividuo ());
 	}
 
 }
