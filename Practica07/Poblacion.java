@@ -46,7 +46,19 @@ public class Poblacion {
 		 * Calcula la aptitud del individuo.
 		 */
 		public void asignaAptitud () {
-			apt = 0;
+			int m = representacion.length;
+			int c = 0;
+			for (int i = 0; i < m-1; i++)
+				for (int j = i+1; j < m; j++) {
+					if (representacion[i] == representacion[j])
+						c++;
+					else {
+						int offset = (representacion[i] > representacion[j]) ? j-i : i-j;
+						if (representacion[i] - offset == representacion[j])
+							c++;
+					}
+				}
+			apt = (m*(m-1))/2 - c;
 		}
 
 		/*
@@ -85,9 +97,9 @@ public class Poblacion {
 	// Tamaño de población
 	private static final int T_POBLACION = 50;
 	// Factor de elitismo
-	private static final int ELITISMO = 1;
+	//private static final int ELITISMO = 1;
 	// Máximas iteraciones (generaciones)
-	private static final int ITERACIONES = 1000;
+	private static final int ITERACIONES = 10000;
 	// Probabilidad de mutación
 	private static final double MUTACION = 0.2;
 	// Tamaño del tablero
@@ -213,10 +225,15 @@ public class Poblacion {
 		return individuos.get (j);
 	}
 
+	/**
+	 * Punto de entrada de la aplicación.
+	 */
 	public static void main(String[] args) {
 		Poblacion p = new Poblacion (T_POBLACION, TABLERO);
 		p.asignarAptitud ();
-		for (int i = 0; i < ITERACIONES; i++) {
+		for (int i = 1; i <= ITERACIONES; i++) {
+			if (i % 50 == 0)
+				System.out.printf ("Generación %d: %s\n", i, p.mejorIndividuo ());
 			Poblacion nuevaP = new Poblacion (T_POBLACION);
 			//for (Individuo s : p.elitismo (ELITISMO))
 			//	nuevaP.agrega (s);
@@ -230,10 +247,8 @@ public class Poblacion {
 			}
 			p = nuevaP;
 			p.asignarAptitud ();
-			if (i % 50 == 0)
-				System.out.printf ("Generacion %d: %s\n", i+1, p.mejorIndividuo ());
 		}
-		System.out.println (p.mejorIndividuo ());
+		System.out.println ("Mejor individuo:\n\t" + p.mejorIndividuo ());
 	}
 
 }
