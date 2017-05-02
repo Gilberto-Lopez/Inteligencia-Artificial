@@ -1,8 +1,13 @@
 import java.util.Random;
 import java.util.ArrayList;
 
+/**
+ * Clase Poblacion representa una población de individuos
+ * para encontrar la solución al problema.
+ */
 public class Poblacion {
 
+	/* Representa un individuo de la población. */
 	private static class Individuo {
 
 		// Representación del individuo
@@ -46,6 +51,8 @@ public class Poblacion {
 		 * Calcula la aptitud del individuo.
 		 */
 		public void asignaAptitud () {
+			// La máxima cantidad de parejas de reinas que se
+			// pueden atacar simultáneamente es m(m-1)/2
 			int m = representacion.length;
 			int c = 0;
 			for (int i = 0; i < m-1; i++)
@@ -99,7 +106,7 @@ public class Poblacion {
 	// Factor de elitismo
 	//private static final int ELITISMO = 1;
 	// Máximas iteraciones (generaciones)
-	private static final int ITERACIONES = 10000;
+	private static final int ITERACIONES = 1000;
 	// Probabilidad de mutación
 	private static final double MUTACION = 0.2;
 	// Tamaño del tablero
@@ -229,15 +236,19 @@ public class Poblacion {
 	 * Punto de entrada de la aplicación.
 	 */
 	public static void main(String[] args) {
+		boolean optimo = false;
 		Poblacion p = new Poblacion (T_POBLACION, TABLERO);
 		p.asignarAptitud ();
-		for (int i = 1; i <= ITERACIONES; i++) {
+		for (int i = 1; i <= ITERACIONES && !optimo; i++) {
+			Individuo M = p.mejorIndividuo ();
 			if (i % 50 == 0)
-				System.out.printf ("Generación %d: %s\n", i, p.mejorIndividuo ());
+				System.out.printf ("Generación %d: %s\n", i, M);
 			Poblacion nuevaP = new Poblacion (T_POBLACION);
 			//for (Individuo s : p.elitismo (ELITISMO))
 			//	nuevaP.agrega (s);
-			nuevaP.agrega (p.mejorIndividuo ());
+			if (M.aptitud () == (TABLERO*(TABLERO-1))/2)
+				optimo = true;
+			nuevaP.agrega (M);
 			while (nuevaP.getIndividuos () < T_POBLACION) {
 				Individuo i1 = p.seleccion ();
 				Individuo i2 = p.seleccion ();
@@ -248,7 +259,7 @@ public class Poblacion {
 			p = nuevaP;
 			p.asignarAptitud ();
 		}
-		System.out.println ("Mejor individuo:\n\t" + p.mejorIndividuo ());
+		System.out.println ("\nMejor individuo:\n\t" + p.mejorIndividuo ());
 	}
 
 }
