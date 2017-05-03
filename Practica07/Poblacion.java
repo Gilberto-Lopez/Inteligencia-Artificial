@@ -33,10 +33,10 @@ public class Poblacion {
 		 * Mueve a las reinas a posiciones aleatorias sobre su fila.
 		 */
 		public void mutacion (double p) {
-			int m = representacion.length, i = 0;
-			while (i < m)
+			int m = representacion.length;
+			for (int i = 0; i < m; i++)
 				if (Poblacion.RAND.nextDouble () <= p)
-					representacion[i++] = Poblacion.RAND.nextInt (m);
+					representacion[i] = Poblacion.RAND.nextInt (m);
 		}
 
 		/*
@@ -49,23 +49,22 @@ public class Poblacion {
 
 		/*
 		 * Calcula la aptitud del individuo.
+		 * Se considera 0 al más apto.
 		 */
 		public void asignaAptitud () {
-			// La máxima cantidad de parejas de reinas que se
-			// pueden atacar simultáneamente es m(m-1)/2
 			int m = representacion.length;
 			int c = 0;
 			for (int i = 0; i < m-1; i++)
 				for (int j = i+1; j < m; j++) {
-					if (representacion[i] == representacion[j])
-						c++;
-					else {
-						int offset = (representacion[i] > representacion[j]) ? j-i : i-j;
-						if (representacion[i] - offset == representacion[j])
-							c++;
-					}
+//					if (representacion[i] == representacion[j])
+//						c++;
+//					else {
+//						int offset = (representacion[i] > representacion[j]) ? j-i : i-j;
+//						if (representacion[i] - offset == representacion[j])
+//							c++;
+//					}
 				}
-			apt = (m*(m-1))/2 - c;
+			apt = c;
 		}
 
 		/*
@@ -114,8 +113,6 @@ public class Poblacion {
 
 	// Cantidad de individuos para la población
 	private int m;
-	// Mutación
-	private double p;
 	// Conjunto de individuos
 	private ArrayList<Individuo> individuos;
 	// Suma de las aptitudes
@@ -217,15 +214,18 @@ public class Poblacion {
 
 	/**
 	 * Regresa el mejor individuo de la población.
+	 * Las aptitudes deben haber sido calculadas previamente.
 	 * @return El mejor individuo.
 	 */
 	public Individuo mejorIndividuo () {
-		int mayor = 0, j = 0;
+		int mejor = 0, j = 0;
 		for (int i = 0; i < m; i++) {
 			Individuo t = individuos.get (i);
 			int apt = t.aptitud ();
-			if (apt > mayor) {
-				mayor = apt;
+			if (apt < mejor) {
+				// Se considera mejor al que tenga aptitud 0
+				// 0 colisiones entre reinas.
+				mejor = apt;
 				j = i;
 			}
 		}
@@ -241,13 +241,13 @@ public class Poblacion {
 		p.asignarAptitud ();
 		for (int i = 1; i <= ITERACIONES && !optimo; i++) {
 			Individuo M = p.mejorIndividuo ();
+			if (M.aptitud () == 0)
+				optimo = true;
 			if (i % 50 == 0)
 				System.out.printf ("Generación %d: %s\n", i, M);
 			Poblacion nuevaP = new Poblacion (T_POBLACION);
 			//for (Individuo s : p.elitismo (ELITISMO))
 			//	nuevaP.agrega (s);
-			if (M.aptitud () == (TABLERO*(TABLERO-1))/2)
-				optimo = true;
 			nuevaP.agrega (M);
 			while (nuevaP.getIndividuos () < T_POBLACION) {
 				Individuo i1 = p.seleccion ();
