@@ -253,18 +253,33 @@ public class Poblacion {
 	}
 
 	/**
+	 * Decide si la población contiene un ejemplar cuya aptitud alcanza el
+	 * valor óptimo proporcionado. Las aptitudes deben calcularse antes.
+	 * @param valorOptimo El valor que se considera óptimo.
+	 * @return true si la población contiene un ejemplar óptimo, false e.o.c.
+	 */
+	public boolean esOptimo (int valorOptimo) {
+		for (Individuo i : individuos)
+			if (i.aptitud () == valorOptimo)
+				return true;
+		return false;
+	}
+
+	/**
 	 * Punto de entrada de la aplicación.
 	 */
 	public static void main(String[] args) {
-		boolean optimo = false;
+		int fitOptimo = (TABLERO-2)*3; // Fitness óptimo.
+		int i; // Iteración
+		System.out.printf ("Aptitud óptima: %d\n", fitOptimo);
+
 		Poblacion p = new Poblacion (T_POBLACION, TABLERO);
 		p.asignarAptitud ();
-		for (int i = 1; i <= ITERACIONES && !optimo; i++) {
+		boolean optimo = p.esOptimo (fitOptimo);
+		for (i = 1; i <= ITERACIONES && !optimo; i++) {
 			Individuo M = p.mejorIndividuo ();
-			if (M.aptitud () == (T_POBLACION-2)*3)
-				optimo = true;
 			if (i % 50 == 0)
-				System.out.printf ("Generación %d: %d %s\n", i, M.aptitud (), M);
+				System.out.printf ("Generación %d:\tIndividuo: %s, Aptitud: %d\n", i, M, M.aptitud ());
 			Poblacion nuevaP = new Poblacion (T_POBLACION);
 			//for (Individuo s : p.elitismo (ELITISMO))
 			//	nuevaP.agrega (s);
@@ -272,17 +287,16 @@ public class Poblacion {
 			while (nuevaP.getIndividuos () < T_POBLACION) {
 				Individuo i1 = p.seleccion ();
 				Individuo i2 = p.seleccion ();
-				//System.out.print(i1.toString()+i2.toString()+"\t");
 				Individuo hijo = Individuo.recombinacion (i1, i2);
-				//System.out.print(hijo+"\t");
 				hijo.mutacion (MUTACION);
-				//System.out.print(hijo + "\n\n");
 				nuevaP.agrega (hijo);	
 			}
 			p = nuevaP;
 			p.asignarAptitud ();
+			optimo = p.esOptimo (fitOptimo);
 		}
-		System.out.println ("\nMejor individuo:\n\t" + p.mejorIndividuo ());
+		System.out.printf ("\nSolución óptima : %s\n\tAptitud %d, encontrada en la generación %d\n\t\n",
+			p.mejorIndividuo (), p.mejorIndividuo ().aptitud (), i-1);
 	}
 
 }
