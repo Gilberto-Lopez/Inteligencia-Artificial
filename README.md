@@ -9,3 +9,5 @@ Prácticas:
 4. Algoritmo A*.
 5. STRIPS.
 6. Perceptrón.
+7. Algoritmos genéticos.
+8. Clase Factor.
