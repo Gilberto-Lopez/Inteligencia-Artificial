@@ -4,7 +4,7 @@ class Factor (object):
 
 	def __init__ (self, variables, probabilidades):
 		"""
-		Crea un nuevo factor con la lista de varaibles dadas y las
+		Crea un nuevo factor con la lista de variables dadas y las
 		probabilodades correspondientes a cada renglón del factor, en el orden
 		en que se listan las variables y la cardinalidad de su soporte.
 		:param variables: La lista de variables del factor.
@@ -21,7 +21,7 @@ class Factor (object):
 		self.probabilidades = probabilidades
 
 	def __indice (self, variable):
-		# Busca el índice de una variable en la lista de varaibles del factor
+		# Busca el índice de una variable en la lista de variables del factor
 		# Si no la encuentra regresa -1
 		i = 0
 		for (k, _) in self.variables:
@@ -41,9 +41,25 @@ class Factor (object):
 		pass
 
 	def reduccion (self, variable, valor):
-		variables = [(k, v) for (k, v) in self.variables if k != variable]
 		indice = self.__indice (variable)
+		c = self.variables[indice][1]
+		variables = [(k, v) for (k, v) in self.variables if k != variable]
+		sop = [v for (k, v) in self.variables]
+		gaps = 1
+		m = len (sop)
+		for i in range (m):
+			if m-(i+1) == indice:
+				break
+			gaps *= sop[m-(i+1)]
 		probabilidades = []
+		# disgusting, fix!
+		try:
+			j = 0
+			while True:
+				probabilidades.append (self.probabilidades[c*gaps*j + valor])
+				j += 1
+		except Exception:
+			pass
 		return Factor (variables, probabilidades)
 
 	def normalizar (self):
