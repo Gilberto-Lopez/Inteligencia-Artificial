@@ -48,15 +48,17 @@ class Factor (object):
 		gaps = 1
 		m = len (sop)
 		for i in range (m):
+			gaps *= sop[m-(i+1)]
 			if m-(i+1) == indice:
 				break
-			gaps *= sop[m-(i+1)]
 		probabilidades = []
 		# disgusting, fix!
 		try:
 			j = 0
 			while True:
-				probabilidades.append (self.probabilidades[c*gaps*j + valor])
+				m = gaps // c
+				for i in range (m):
+					probabilidades.append (self.probabilidades[gaps*j + m*valor + i])
 				j += 1
 		except Exception:
 			pass
