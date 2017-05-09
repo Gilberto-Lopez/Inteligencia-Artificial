@@ -19,7 +19,10 @@ class Factor (object):
     def __direccionamiento (self, variables):
         # Método auxiliar que recibe un diccionario de variables y su valor
         # asignado y regresa el índice de la tabla de valores correspondiente.
-        return 0
+        r = 0
+        for var in self.alcance:
+            r = r * len (var.valores_posibles) + variables[var]
+        return r
 
     def multiplicacion (self, factor):
         pass
@@ -34,7 +37,7 @@ class Factor (object):
         t = sum (self.valores)
         return Factor (self.alcance.copy (), [x / t for x in self.valores])
 
-    def marginallizacion (self, variable):
+    def marginalizacion (self, variable):
         pass
 
 #
