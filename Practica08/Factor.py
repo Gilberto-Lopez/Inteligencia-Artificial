@@ -1,6 +1,10 @@
 from itertools import product
 
 class Factor (object):
+	"""
+	Clase Factor para distribuciones de probabilidad conjuntas que implementa
+	las operaciones Multiplicación, Reducción, Normalización y Marginalización.
+	"""
 
 	def __init__ (self, variables, probabilidades):
 		"""
@@ -22,13 +26,13 @@ class Factor (object):
 
 	def __indice (self, variable):
 		# Busca el índice de una variable en la lista de variables del factor
-		# Si no la encuentra regresa -1
+		# Si no la encuentra lanza una excepción ValueError.
 		i = 0
 		for (k, _) in self.variables:
 			if k == variable:
 				return i
 			i += 1
-		return -1
+		raise ValueError ('La variable %s no está en el factor' % variable)
 
 	@classmethod
 	def multiplicacion (factor1, factor2):
@@ -41,6 +45,12 @@ class Factor (object):
 		pass
 
 	def reduccion (self, variable, valor):
+		"""
+		Reduce un factor dada una variable y el valor que debe tener dicha
+		variable.
+		:param variable: La variable con la que se va a reducir.
+		:param valor: El valor de la variable que se debe cumplir.
+		"""
 		indice = self.__indice (variable)
 		c = self.variables[indice][1]
 		variables = [(k, v) for (k, v) in self.variables if k != variable]
@@ -72,4 +82,8 @@ class Factor (object):
 		self.probabilidades = [x / t for x in self.probabilidades]
 
 	def marginalizar (self, variable):
+		"""
+		Marginaliza una variable del factor.
+		:param variable: La variable a marginalizar.
+		"""
 		pass
