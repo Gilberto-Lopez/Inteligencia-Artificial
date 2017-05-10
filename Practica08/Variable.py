@@ -28,6 +28,15 @@ class Variable (object):
         """
         return self.__str__ ()
 
+    def __eq__ (self, other):
+        """
+        Comparación de variables. Dos variables son iguales si tienen el mismo
+        nombre y la misma lista de valores posibles en el mismo orden.
+        :param other: La variable con la que se desea comparar.
+        """
+        return (self.nombre == other.nombre
+            and self.valores_posibles == other.valores_posibles)
+
     @staticmethod
     def tabla_de_valores (variables):
         """

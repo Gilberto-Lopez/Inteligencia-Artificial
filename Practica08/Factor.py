@@ -65,6 +65,15 @@ class Factor (object):
         return Factor (self.alcance.copy (), [x / t for x in self.valores])
 
     def marginalizacion (self, variable):
-        pass
-
+        """
+        Marginaliza una variable del factor.
+        :param variable: La variable a marginalizar.
+        """
+        variables = self.alcance.copy ()
+        variables.remove (variable)
+        factores = []
+        for s in variable.valores_posibles:
+            factores.append (self.reduccion (variable, s))
+        valores = zip (*[f.valores for f in factores])
+        return Factor (variables, list (map (sum, valores)))
 #
