@@ -24,8 +24,25 @@ class Factor (object):
             r = r * len (var.valores_posibles) + variables[var]
         return r
 
+    def __mult_disjunta (self, factor):
+        # Multitplicación de factores con alcance disjuntos.
+        alcance = self.alcance + factor.alcance
+        valores = []
+        for t_i in self.valores:
+            for t_j in factor.valores:
+                valores.append (t_i * t_j)
+        return Factor (alcance, valores)
+
     def multiplicacion (self, factor):
-        pass
+        """
+        Multiplica el factor self con el factor dado y regresa el resultado.
+        :param factor: El factor con el que se va a multiplicar.
+        """
+        interseccion = list (filter (lambda x: x in self.alcance, factor.alcance))
+        if interseccion == []:
+            return self.__mult_disjunta (factor)
+        else:
+            pass
 
     def reduccion (self, variable, valor):
         """
