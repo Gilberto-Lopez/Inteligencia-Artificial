@@ -22,6 +22,12 @@ class Variable (object):
         """
         return self.nombre
 
+    def __repr__ (self):
+        """
+        Representación de una variable: Su nombre.
+        """
+        return self.__str__ ()
+
     @staticmethod
     def tabla_de_valores (variables):
         """

@@ -28,7 +28,34 @@ class Factor (object):
         pass
 
     def reduccion (self, variable, valor):
-        pass
+        """
+        Reduce un factor dada una variable y el valor que debe tener dicha
+        variable.
+        :param variable: La variable con la que se va a reducir.
+        :param valor: El valor de la variable que se debe cumplir.
+        """
+        indice = self.alcance.index (variable)
+        c = len (variable.valores_posibles)
+        variables = self.alcance.copy ()
+        variables.remove (variable)
+        gaps = 1
+        m = len (self.alcance)
+        for i in range (m):
+            gaps *= len (self.alcance[m-(i+1)].valores_posibles)
+            if m-(i+1) == indice:
+                break
+        valores = []
+        # disgusting, fix!
+        try:
+            j = 0
+            while True:
+                m = gaps // c
+                for i in range (m):
+                    valores.append (self.valores[gaps*j + m*valor + i])
+                j += 1
+        except Exception:
+            pass
+        return Factor (variables, valores)
 
     def normalizacion (self):
         """
