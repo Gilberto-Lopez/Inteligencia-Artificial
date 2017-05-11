@@ -38,11 +38,19 @@ class Factor (object):
         Multiplica el factor self con el factor dado y regresa el resultado.
         :param factor: El factor con el que se va a multiplicar.
         """
-        interseccion = list (filter (lambda x: x in self.alcance, factor.alcance))
+        interseccion = list (filter (lambda x: x in factor.alcance, self.alcance))
         if interseccion == []:
             return self.__mult_disjunta (factor)
         else:
-            pass
+            union = self.alcance + [X for X in factor.alcance if X not in self.alcance]
+            valores = []
+            for var in interseccion:
+                for s in var.valores_posibles:
+                    f1 = self.reduccion (var, s)
+                    f2 = factor.reduccion (var, s)
+                    f3 = f1.multiplicacion (f2)
+                    valores += f3.valores
+            return Factor (union, valores)
 
     def reduccion (self, variable, valor):
         """
@@ -93,4 +101,5 @@ class Factor (object):
             factores.append (self.reduccion (variable, s))
         valores = zip (*[f.valores for f in factores])
         return Factor (variables, list (map (sum, valores)))
+
 #
