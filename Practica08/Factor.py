@@ -1,3 +1,5 @@
+from Variable import Variable
+
 class Factor (object):
     """
     Clase Factor para distribuciones de probabilidad conjuntas que implementa
