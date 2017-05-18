@@ -38,21 +38,23 @@ class Factor (object):
     def multiplicacion (self, factor):
         """
         Multiplica el factor self con el factor dado y regresa el resultado.
+        El orden en que aparecen las variables en el factor resultado puede
+        cambiar al orden del que aparecen en la unión de sus alcances (como
+        listas).
         :param factor: El factor con el que se va a multiplicar.
         """
         interseccion = list (filter (lambda x: x in factor.alcance, self.alcance))
         if interseccion == []:
             return self.__mult_disjunta (factor)
         else:
-            union = self.alcance + [X for X in factor.alcance if X not in self.alcance]
             valores = []
-            for var in interseccion:
-                for s in var.valores_posibles:
-                    f1 = self.reduccion (var, s)
-                    f2 = factor.reduccion (var, s)
-                    f3 = f1.multiplicacion (f2)
-                    valores += f3.valores
-            return Factor (union, valores)
+            V = interseccion[0]
+            for s in V.valores_posibles:
+                f1 = self.reduccion (V, s)
+                f2 = factor.reduccion (V, s)
+                f3 = f1.multiplicacion (f2)
+                valores += f3.valores
+            return Factor ([V] + f3.alcance, valores)
 
     def reduccion (self, variable, valor):
         """
@@ -103,5 +105,20 @@ class Factor (object):
             factores.append (self.reduccion (variable, s))
         valores = zip (*[f.valores for f in factores])
         return Factor (variables, list (map (sum, valores)))
+
+    def __str__ (self):
+        """
+        Representación en string de un factor.
+        """
+        return self.__repr__ ()
+
+    def __repr__ (self):
+        """
+        Representación en string de un factor.
+        """
+        string = '%s\n' % self.alcance
+        for t in zip (self.tabla_valores, self.valores):
+            string += '{} {:f}\n'.format (*t)
+        return string
 
 #
