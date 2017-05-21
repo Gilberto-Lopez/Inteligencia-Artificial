@@ -10,4 +10,6 @@ Prácticas:
 5. STRIPS.
 6. Perceptrón.
 7. Algoritmos genéticos.
-8. Clase Factor.
+8. Clase Factor. (branch P08)
+
+Tareas/ : Scripts de tareas.
