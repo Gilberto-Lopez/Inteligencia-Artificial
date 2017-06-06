@@ -141,6 +141,14 @@ public class Mundo {
     }
 
     /**
+     * Regresa la matriz de celdas que representan el mundo.
+     * @return La matriz de celdas.
+     */
+    public Celda[][] celdas () {
+        return this.matriz;
+    }
+
+    /**
      * Dado un par de números, regresa la celda correspondiente en el mundo.
      * @param posicion Un par de números.
      * @return La celda que corresponde al par de números dado.
