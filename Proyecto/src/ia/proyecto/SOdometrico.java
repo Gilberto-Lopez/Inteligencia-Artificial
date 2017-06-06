@@ -10,7 +10,7 @@ public class SOdometrico extends Sensor {
 
     @Override
     public void medicion (Double medicion) {
-        this.media += medicion + RAND.nextGaussian ()*desviacion;
+        this.media = medicion + Sensor.RAND.nextGaussian () * this.desviacion;
     }
 
 }

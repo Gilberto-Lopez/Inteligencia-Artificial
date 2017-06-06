@@ -10,7 +10,7 @@ public class SGiro extends Sensor {
 
     @Override
     public void medicion (Double medicion) {
-        this.media += Math.abs (media) + Sensor.RAND.nextGaussian () * desviacion;
+        this.media = medicion + Sensor.RAND.nextGaussian () * this.desviacion;
     }
 
 }

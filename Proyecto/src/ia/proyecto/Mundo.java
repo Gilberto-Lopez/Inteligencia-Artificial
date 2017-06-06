@@ -36,7 +36,7 @@ public class Mundo {
             this.centro = new Par<> (x*cm + cm/2.0, y*cm + cm/2.0);
             this.cm = cm;
             this.obstaculo = obstaculo;
-            this.creencias = new double[8],
+            this.creencias = new double[8];
         }
 
     }
@@ -162,7 +162,7 @@ public class Mundo {
      */
     public int anguloDiscretizado (double t) {
         t += 22.5;
-        while (t =< 0)
+        while (t <= 0)
             t += 2*Math.PI;
         t = t % (2*Math.PI);
         int i = 0;

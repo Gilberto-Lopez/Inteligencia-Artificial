@@ -6,7 +6,7 @@ public abstract class Sensor {
 
     protected Double media;
     protected final Double desviacion;
-    protected final Random RAND = new Random ();
+    protected static final Random RAND = new Random ();
 
     protected Sensor (Double media, Double desviacion) {
         this.media = media;
