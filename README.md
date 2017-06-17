@@ -11,3 +11,5 @@ Prácticas:
 6. Perceptrón.
 7. Algoritmos genéticos.
 8. Clase Factor.
+
+Proyecto, Localización de robots.
